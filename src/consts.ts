@@ -1,5 +1,4 @@
-// Place any global data in this file.
-// You can import this data from anywhere in your site by using the `import` keyword.
-
-export const SITE_TITLE = "Astro Blog";
-export const SITE_DESCRIPTION = "Welcome to my website!";
+// Global site constants for Aegis
+export const SITE_TITLE = "Aegis - Zero-Trust Remote Environment Workstation";
+export const SITE_DESCRIPTION =
+  "The enterprise desktop workstation for DevOps leads, SREs, and security engineers. Scrypt Vault, WebGL Xterm.js Terminal, SFTP Explorer, Live Vitals Telemetry, and Parallel Multi-Server Execution.";
