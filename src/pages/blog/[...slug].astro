@@ -1,0 +1,143 @@
+---
+import BaseHead from '../../components/BaseHead.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import { getCollection, render } from 'astro:content';
+
+export async function getStaticPaths() {
+	const posts = await getCollection('blog');
+	return posts.map((post) => ({
+		params: { slug: post.id },
+		props: post,
+	}));
+}
+
+const post = Astro.props;
+const { Content } = await render(post);
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={`${post.data.title} — Aegis Blog`} description={post.data.description} />
+	</head>
+	<body>
+		<Header />
+
+		<main class="post-main">
+			<article class="container post-container">
+				<div class="post-header">
+					<a href="/blog" class="back-link">&larr; Back to Articles</a>
+					<div class="post-meta">
+						<span class="pastel-tag tag-blue">{post.data.category}</span>
+						<time datetime={post.data.pubDate.toISOString()} class="mono-date">
+							{post.data.pubDate.toLocaleDateString('en-us', {
+								year: 'numeric',
+								month: 'long',
+								day: 'numeric',
+							})}
+						</time>
+					</div>
+					<h1 class="editorial-title post-heading">{post.data.title}</h1>
+					<div class="author-bar">Published by {post.data.author}</div>
+				</div>
+
+				<div class="markdown-body">
+					<Content />
+				</div>
+			</article>
+		</main>
+
+		<Footer />
+	</body>
+</html>
+
+<style>
+	.post-main {
+		padding: 5rem 0;
+	}
+	.post-container {
+		max-width: 800px;
+	}
+	.back-link {
+		font-family: var(--font-mono);
+		font-size: 0.8125rem;
+		color: var(--text-dim);
+		display: inline-block;
+		margin-bottom: 2rem;
+	}
+	.back-link:hover {
+		color: var(--text-main);
+	}
+	.post-meta {
+		display: flex;
+		align-items: center;
+		gap: 1rem;
+		margin-bottom: 1.5rem;
+	}
+	.mono-date {
+		font-family: var(--font-mono);
+		font-size: 0.8125rem;
+		color: var(--text-dim);
+	}
+	.post-heading {
+		font-size: 3rem;
+		line-height: 1.15;
+		margin-bottom: 1.5rem;
+	}
+	.author-bar {
+		font-family: var(--font-mono);
+		font-size: 0.8125rem;
+		color: var(--text-dim);
+		padding-bottom: 2rem;
+		border-bottom: 1px solid var(--border-light);
+		margin-bottom: 3rem;
+	}
+
+	/* Markdown Content Styling */
+	.markdown-body {
+		font-size: 1.05rem;
+		line-height: 1.8;
+		color: var(--text-muted);
+	}
+	.markdown-body :global(h2) {
+		font-size: 1.75rem;
+		font-weight: 700;
+		color: var(--text-main);
+		margin: 2.5rem 0 1rem 0;
+	}
+	.markdown-body :global(h3) {
+		font-size: 1.35rem;
+		font-weight: 700;
+		color: var(--text-main);
+		margin: 2rem 0 0.75rem 0;
+	}
+	.markdown-body :global(h4) {
+		font-size: 1.1rem;
+		font-weight: 700;
+		color: var(--text-main);
+		margin: 1.5rem 0 0.5rem 0;
+	}
+	.markdown-body :global(p) {
+		margin-bottom: 1.5rem;
+	}
+	.markdown-body :global(ul), .markdown-body :global(ol) {
+		margin-bottom: 1.5rem;
+		padding-left: 1.5rem;
+	}
+	.markdown-body :global(li) {
+		margin-bottom: 0.5rem;
+	}
+	.markdown-body :global(hr) {
+		border: none;
+		border-top: 1px solid var(--border-light);
+		margin: 3rem 0;
+	}
+	.markdown-body :global(a) {
+		color: var(--pastel-blue-text);
+		text-decoration: underline;
+	}
+	.markdown-body :global(strong) {
+		color: var(--text-main);
+	}
+</style>

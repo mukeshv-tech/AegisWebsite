@@ -1,0 +1,121 @@
+---
+import BaseHead from '../../components/BaseHead.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import { getCollection } from 'astro:content';
+
+const posts = (await getCollection('blog')).sort(
+	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title="Blog — Aegis Workstation" description="Engineering notes, product updates, and architecture breakdowns for Aegis Remote Workstation." />
+	</head>
+	<body>
+		<Header />
+
+		<main class="blog-main">
+			<section class="blog-hero">
+				<div class="container">
+					<div class="mono-tag">Engineering Log</div>
+					<h1 class="editorial-title">Articles &amp; <em>Release Notes</em></h1>
+					<p class="hero-desc">
+						Updates, architectural specifications, and release notes from the Aegis core team.
+					</p>
+				</div>
+			</section>
+
+			<section class="blog-list-section">
+				<div class="container">
+					<div class="posts-grid">
+						{posts.map((post) => (
+							<a href={`/blog/${post.id}`} class="post-card">
+								<div class="card-meta">
+									<span class="pastel-tag tag-blue">{post.data.category}</span>
+									<time datetime={post.data.pubDate.toISOString()} class="mono-date">
+										{post.data.pubDate.toLocaleDateString('en-us', {
+											year: 'numeric',
+											month: 'short',
+											day: 'numeric',
+										})}
+									</time>
+								</div>
+								<h2 class="post-title">{post.data.title}</h2>
+								<p class="post-desc">{post.data.description}</p>
+								<div class="post-author">{post.data.author}</div>
+							</a>
+						))}
+					</div>
+				</div>
+			</section>
+		</main>
+
+		<Footer />
+	</body>
+</html>
+
+<style>
+	.blog-main {
+		min-height: 80vh;
+	}
+	.blog-hero {
+		padding: 5rem 0 3rem 0;
+	}
+	.hero-desc {
+		font-size: 1.1rem;
+		color: var(--text-muted);
+		margin-top: 1rem;
+		max-width: 600px;
+	}
+	.posts-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+		gap: 1.5rem;
+	}
+	.post-card {
+		background: var(--bg-surface);
+		border: 1px solid var(--border-light);
+		border-radius: 8px;
+		padding: 2rem;
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+		transition: border-color 0.2s ease, transform 0.2s ease;
+	}
+	.post-card:hover {
+		border-color: var(--border-strong);
+		transform: translateY(-2px);
+	}
+	.card-meta {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+	}
+	.mono-date {
+		font-family: var(--font-mono);
+		font-size: 0.75rem;
+		color: var(--text-dim);
+	}
+	.post-title {
+		font-size: 1.25rem;
+		font-weight: 700;
+		color: var(--text-main);
+		line-height: 1.35;
+	}
+	.post-desc {
+		font-size: 0.875rem;
+		color: var(--text-muted);
+		line-height: 1.6;
+	}
+	.post-author {
+		font-family: var(--font-mono);
+		font-size: 0.75rem;
+		color: var(--text-dim);
+		margin-top: auto;
+		padding-top: 1rem;
+		border-top: 1px solid var(--border-light);
+	}
+</style>
