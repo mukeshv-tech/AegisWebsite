@@ -14,128 +14,137 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 		<Header />
 
 		<main>
-			<!-- 🚀 HERO SECTION -->
+			<!-- HERO SECTION -->
 			<section class="hero-section">
-				<div class="container hero-container">
-					<div class="badge badge-purple hero-badge">
-						<span>🛡️ Zero-Trust Remote Environment Management</span>
-					</div>
-
-					<h1 class="hero-title">
-						Command Your Infrastructure with <br />
-						<span class="gradient-text">Zero-Trust Precision</span>
+				<div class="container">
+					<div class="mono-tag hero-meta">Zero-Trust Environment Workstation</div>
+					
+					<h1 class="editorial-title hero-heading">
+						Command remote infrastructure with <em>zero-trust precision.</em>
 					</h1>
 
-					<p class="hero-subtitle">
-						Aegis is the next-generation desktop workstation for DevOps leads, SREs, and security engineers. 
-						Combining WebGL-accelerated terminal emulation, zero-knowledge Scrypt vault encryption, 
-						parallel multi-server execution, and live cross-distro vitals telemetry into a unified workstation.
+					<p class="hero-desc">
+						Aegis is an enterprise desktop workstation combining WebGL terminal emulation, zero-knowledge Scrypt vault encryption, parallel multi-server execution, and cross-distro vitals telemetry into a unified local environment.
 					</p>
 
 					<div class="hero-actions">
-						<a href="https://github.com/mukeshv-tech/Aegis/releases/" target="_blank" rel="noopener" class="btn btn-primary btn-lg">
-							🚀 View GitHub Releases (v1.0.0)
+						<a href="https://github.com/mukeshv-tech/Aegis/releases/" target="_blank" rel="noopener" class="btn btn-primary">
+							View Releases (v1.0.0)
 						</a>
-						<a href="https://github.com/mukeshv-tech/Aegis" target="_blank" rel="noopener" class="btn btn-secondary btn-lg">
-							⭐ View Source on GitHub
+						<a href="https://github.com/mukeshv-tech/Aegis" target="_blank" rel="noopener" class="btn btn-secondary">
+							GitHub Repository
 						</a>
 					</div>
 
-					<div class="hero-pills">
-						<div class="pill">🔒 Scrypt + AES-256-GCM Vault</div>
-						<div class="pill">⚡ WebGL Xterm.js v5.5</div>
-						<div class="pill">📊 Real-Time Vitals Telemetry</div>
-						<div class="pill">🛡️ 40/40 Passing Quality Gate</div>
+					<div class="hero-shortcut">
+						<span>Quick Launcher:</span> <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>K</kbd>
 					</div>
 				</div>
 			</section>
 
-			<!-- ⭐ KEY FEATURES GRID SECTION -->
-			<section id="features" class="features-section">
+			<!-- BENTO FEATURES GRID -->
+			<section id="features">
 				<div class="container">
-					<div class="section-title text-center">
-						<div class="badge">Engineered for Reliability</div>
-						<h2 class="gradient-heading">Enterprise Remote Workstation Features</h2>
-						<p class="section-desc">Designed to manage, automate, and secure modern hybrid cloud infrastructure.</p>
+					<div class="section-header">
+						<div class="mono-tag">Subsystem Architecture</div>
+						<h2 class="section-heading">Built for High-Consequence Operations</h2>
 					</div>
 
-					<div class="features-grid">
-						<!-- Feature 1 -->
-						<div class="glass-card feature-card">
-							<div class="icon-box icon-purple">🔒</div>
-							<h3>Zero-Knowledge Encrypted Vault</h3>
+					<div class="bento-grid">
+						<!-- Bento Card 1 -->
+						<div class="bento-card">
+							<div class="card-meta">
+								<span class="pastel-tag tag-purple">CRYPTO VAULT</span>
+							</div>
+							<h3>Zero-Knowledge Cryptographic Vault</h3>
 							<p>
-								Secured with GPU-resistant <strong>Scrypt key derivation</strong> (N=16384, r=8, p=1) and <strong>AES-256-GCM</strong> authenticated encryption. Decrypted master key buffers in RAM are automatically zero-filled upon vault locking.
+								Secured with GPU-resistant Scrypt key derivation (N=16384, r=8, p=1) and AES-256-GCM authenticated encryption. Decrypted master key allocations in process memory are zero-filled immediately upon vault locking.
 							</p>
 						</div>
 
-						<!-- Feature 2 -->
-						<div class="glass-card feature-card">
-							<div class="icon-box icon-cyan">⚡</div>
+						<!-- Bento Card 2 -->
+						<div class="bento-card">
+							<div class="card-meta">
+								<span class="pastel-tag tag-blue">TERMINAL ENGINE</span>
+							</div>
 							<h3>WebGL Terminal & Native Zmodem</h3>
 							<p>
-								Powered by <strong>@xterm/xterm v5.5</strong> with full WebGL rendering, search addons, and clickable web links. Features native <strong>sz/rz Zmodem file transfers</strong> directly inside your terminal viewport.
+								Powered by @xterm/xterm v5.5 with WebGL acceleration, search addons, and clickable web links. Features native inline sz and rz Zmodem file transfers directly inside active terminal viewports.
 							</p>
 						</div>
 
-						<!-- Feature 3 -->
-						<div class="glass-card feature-card">
-							<div class="icon-box icon-blue">📁</div>
+						<!-- Bento Card 3 -->
+						<div class="bento-card">
+							<div class="card-meta">
+								<span class="pastel-tag tag-green">FILE MANAGER</span>
+							</div>
 							<h3>SFTP Browser & Remote Editor</h3>
 							<p>
-								Full-featured remote file explorer supporting drag-and-drop uploads, downloads, live code editing, permission management, and single-click remote directory compression/extraction (.tar.gz / .zip).
+								Multi-pane remote file explorer supporting drag-and-drop uploads, live code editing, permission management, and single-click remote directory compression and extraction (.tar.gz / .zip).
 							</p>
 						</div>
 
-						<!-- Feature 4 -->
-						<div class="glass-card feature-card">
-							<div class="icon-box icon-emerald">🔗</div>
+						<!-- Bento Card 4 -->
+						<div class="bento-card">
+							<div class="card-meta">
+								<span class="pastel-tag tag-amber">NETWORKING</span>
+							</div>
 							<h3>Bastion Hosts & Port Tunneling</h3>
 							<p>
-								Native multi-hop SSH proxy forwarding for isolated VPCs. Establish and monitor Local (-L) and Remote (-R) SSH port forwarding tunnels with real-time port validation.
+								Native multi-hop SSH proxy forwarding via sshClient.forwardOut() for isolated VPCs. Establish and monitor Local (-L) and Remote (-R) SSH port forwarding tunnels with real-time port validation.
 							</p>
 						</div>
 
-						<!-- Feature 5 -->
-						<div class="glass-card feature-card">
-							<div class="icon-box icon-amber">📊</div>
-							<h3>Cross-Distro System Telemetry</h3>
+						<!-- Bento Card 5 -->
+						<div class="bento-card">
+							<div class="card-meta">
+								<span class="pastel-tag tag-purple">TELEMETRY</span>
+							</div>
+							<h3>Cross-Distro System Vitals</h3>
 							<p>
 								Single-pipe telemetric parser delivering live CPU, RAM, and Disk metrics every 3000ms. Compatible with Ubuntu, Debian, CentOS, RHEL, Arch, Alpine (BusyBox), and macOS/BSD hosts.
 							</p>
 						</div>
 
-						<!-- Feature 6 -->
-						<div class="glass-card feature-card">
-							<div class="icon-box icon-purple">🚀</div>
+						<!-- Bento Card 6 -->
+						<div class="bento-card">
+							<div class="card-meta">
+								<span class="pastel-tag tag-blue">AUTOMATION</span>
+							</div>
 							<h3>Parallel Multi-Server Execution</h3>
 							<p>
-								Execute complex shell automation scripts across dozens of remote servers simultaneously. Features real-time log aggregation and reusable snippet templates with <code>${"{variable}"}</code> substitution.
+								Execute shell automation scripts across multiple remote servers simultaneously. Features real-time log aggregation and reusable snippet templates with ${"{variable}"} substitution.
 							</p>
 						</div>
 
-						<!-- Feature 7 -->
-						<div class="glass-card feature-card">
-							<div class="icon-box icon-cyan">📽️</div>
+						<!-- Bento Card 7 -->
+						<div class="bento-card">
+							<div class="card-meta">
+								<span class="pastel-tag tag-green">AUDIT LOGGING</span>
+							</div>
 							<h3>ANSI Session Recording & Replay</h3>
 							<p>
-								Record active terminal sessions with microsecond precision. Replay sessions inside Aegis using integrated playback controls (Play, Pause, 1x-4x Speed, and scrubbing timeline).
+								Record terminal sessions with microsecond precision. Replay sessions inside Aegis using integrated playback controls (Play, Pause, 1x-4x Speed, and timeline scrubbing).
 							</p>
 						</div>
 
-						<!-- Feature 8 -->
-						<div class="glass-card feature-card">
-							<div class="icon-box icon-blue">🧩</div>
+						<!-- Bento Card 8 -->
+						<div class="bento-card">
+							<div class="card-meta">
+								<span class="pastel-tag tag-amber">EXTENSIBILITY</span>
+							</div>
 							<h3>Dynamic Plugin Engine & Styling</h3>
 							<p>
-								Extend functionality via custom JavaScript plugins loaded dynamically with JSDoc metadata parsing. Customize themes and styling with the built-in <code>aegisApi</code> color palette bridge.
+								Extend functionality via custom JavaScript plugins loaded dynamically with JSDoc metadata parsing. Customize themes and styling with the built-in aegisApi color palette bridge.
 							</p>
 						</div>
 
-						<!-- Feature 9 -->
-						<div class="glass-card feature-card">
-							<div class="icon-box icon-emerald">🛡️</div>
-							<h3>Enterprise Security Policy Engine</h3>
+						<!-- Bento Card 9 -->
+						<div class="bento-card">
+							<div class="card-meta">
+								<span class="pastel-tag tag-purple">POLICY ENGINE</span>
+							</div>
+							<h3>Enterprise Security Policies</h3>
 							<p>
 								Enforce master password complexity rules, restrict port forwarding creation globally, and limit SSH negotiation to approved ciphers (AES-GCM and ChaCha20-Poly1305).
 							</p>
@@ -144,137 +153,120 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 				</div>
 			</section>
 
-			<!-- 🔐 SECURITY SPECIFICATION SECTION -->
-			<section id="security" class="security-section">
+			<!-- SECURITY SPECIFICATION -->
+			<section id="security">
 				<div class="container">
-					<div class="section-title text-center">
-						<div class="badge badge-emerald">Hardened Architecture</div>
-						<h2 class="gradient-heading">Zero-Trust Cryptographic Specification</h2>
-						<p class="section-desc">Built from the ground up to guarantee confidentiality, integrity, and non-repudiation.</p>
+					<div class="section-header">
+						<div class="mono-tag">Threat Model & Hardening</div>
+						<h2 class="section-heading">Zero-Trust Cryptographic Standard</h2>
 					</div>
 
-					<div class="security-grid">
-						<div class="glass-card security-card">
-							<h4>🔑 Scrypt Key Derivation</h4>
-							<p>Replaced legacy PBKDF2 with <strong>Scrypt (N=16384, r=8, p=1)</strong> derived keys using 16-byte random salts. Offers memory-hard protection against brute-force attacks.</p>
+					<div class="spec-table">
+						<div class="spec-row">
+							<div class="spec-key">Key Derivation</div>
+							<div class="spec-val">Scrypt (N=16384, r=8, p=1) with 16-byte random salts</div>
 						</div>
-
-						<div class="glass-card security-card">
-							<h4>🛡️ AES-256-GCM Encryption</h4>
-							<p>All stored connection profiles and private keys are encrypted using AES-256-GCM with 96-bit random IVs and 128-bit authentication tags to detect payload tampering.</p>
+						<div class="spec-row">
+							<div class="spec-key">Authenticated Encryption</div>
+							<div class="spec-val">AES-256-GCM with 96-bit random IVs and 128-bit authentication tags</div>
 						</div>
-
-						<div class="glass-card security-card">
-							<h4>🧹 Volatile Memory Wiping</h4>
-							<p>Master key Buffer allocations in RAM are zero-filled (<code>masterKey.fill(0)</code>) immediately upon locking the vault or closing the application process.</p>
+						<div class="spec-row">
+							<div class="spec-key">Process RAM Safety</div>
+							<div class="spec-val">Decrypted master key allocations zero-filled (masterKey.fill(0)) on vault lock</div>
 						</div>
-
-						<div class="glass-card security-card">
-							<h4>💉 Command Injection Guards</h4>
-							<p>Dynamic shell arguments and batch operations pass through <code>escapeShellArg</code> single-quote escaping to prevent subshell injection attacks.</p>
+						<div class="spec-row">
+							<div class="spec-key">Command Escaping</div>
+							<div class="spec-val">escapeShellArg single-quote encapsulation preventing subshell injection</div>
 						</div>
-
-						<div class="glass-card security-card">
-							<h4>📁 Path Traversal Prevention</h4>
-							<p>Key management and plugin file paths enforce strict <code>path.basename()</code> bounds checking to reject directory traversal attempts (<code>../</code>).</p>
+						<div class="spec-row">
+							<div class="spec-key">Path Traversal Guards</div>
+							<div class="spec-val">path.basename() bounds checking on key generation and plugin file paths</div>
 						</div>
-
-						<div class="glass-card security-card">
-							<h4>⚡ TOCTOU Race-Free Storage</h4>
-							<p>File store handlers in <code>store.ts</code> operate atomically inside <code>try/catch</code> blocks, eliminating Time-of-Check to Time-of-Use file race condition warnings.</p>
+						<div class="spec-row">
+							<div class="spec-key">TOCTOU Race Condition Removal</div>
+							<div class="spec-val">Atomic store operations inside try/catch blocks without non-atomic existsSync pre-checks</div>
 						</div>
 					</div>
 				</div>
 			</section>
 
-			<!-- 📐 SYSTEM ARCHITECTURE SECTION -->
-			<section id="architecture" class="architecture-section">
+			<!-- FAUX-OS ARCHITECTURE WINDOW -->
+			<section id="architecture">
 				<div class="container">
-					<div class="section-title text-center">
-						<div class="badge badge-purple">System Interconnects</div>
-						<h2 class="gradient-heading">High-Performance System Architecture</h2>
-						<p class="section-desc">Isolated process architecture ensuring non-blocking rendering and IPC bridge security.</p>
+					<div class="section-header">
+						<div class="mono-tag">System Topology</div>
+						<h2 class="section-heading">Process Isolation & Architecture</h2>
 					</div>
 
-					<div class="glass-card architecture-box">
-						<div class="arch-layer">
-							<div class="layer-title">🖥️ Aegis Renderer Process (React 19 + Vite)</div>
-							<div class="layer-pills">
-								<span>Terminal Viewport</span>
-								<span>SFTP Multi-Pane</span>
-								<span>Live Telemetry Bar</span>
-								<span>Batch Engine</span>
+					<!-- Faux-OS Window Chrome -->
+					<div class="window-chrome">
+						<div class="window-header">
+							<div class="window-dots">
+								<span class="dot"></span>
+								<span class="dot"></span>
+								<span class="dot"></span>
 							</div>
+							<div class="window-title">aegis-topology.sys</div>
 						</div>
-
-						<div class="arch-arrow">⚡ Secure Preload IPC Bridge (Context Isolation) ⚡</div>
-
-						<div class="arch-layer">
-							<div class="layer-title">🔒 Electron Main Process (Node 22 / C++)</div>
-							<div class="layer-pills">
-								<span>Scrypt Vault Engine</span>
-								<span>SSH2 Proxy & Bastion</span>
-								<span>Local PTY Spawner</span>
-								<span>Multi-Distro Vitals Parser</span>
+						<div class="window-body">
+							<div class="topo-block">
+								<div class="topo-title">RENDERER PROCESS [React 19 + Vite]</div>
+								<div class="topo-desc">Xterm.js Terminal Viewport // SFTP Explorer // Vitals Bar // Batch Engine</div>
 							</div>
-						</div>
-
-						<div class="arch-arrow">🌐 Secure Protocol Tunneling</div>
-
-						<div class="arch-layer">
-							<div class="layer-title">🖥️ Target Infrastructure</div>
-							<div class="layer-pills">
-								<span>Ubuntu / Debian</span>
-								<span>CentOS / RHEL / Arch</span>
-								<span>Alpine Linux</span>
-								<span>macOS / BSD Hosts</span>
+							<div class="topo-divider">↓ SECURE PRELOAD IPC BRIDGE (Context Isolation) ↓</div>
+							<div class="topo-block">
+								<div class="topo-title">MAIN PROCESS [Electron 43.3 / Node 22]</div>
+								<div class="topo-desc">Scrypt Vault // SSH2 Bastion Proxy // Local PTY // Vitals Telemetry Parser</div>
+							</div>
+							<div class="topo-divider">↓ ENCRYPTED NETWORK PROTOCOLS ↓</div>
+							<div class="topo-block">
+								<div class="topo-title">TARGET INFRASTRUCTURE</div>
+								<div class="topo-desc">Ubuntu / Debian / RHEL / Arch / Alpine / macOS / BSD Hosts</div>
 							</div>
 						</div>
 					</div>
 				</div>
 			</section>
 
-			<!-- 🧪 QUALITY GATE SECTION -->
-			<section id="qa" class="qa-section">
+			<!-- VERIFICATION MATRIX -->
+			<section id="qa">
 				<div class="container">
-					<div class="section-title text-center">
-						<div class="badge">Verification Matrix</div>
-						<h2 class="gradient-heading">Zero-Defect Quality Gate & Testing</h2>
-						<p class="section-desc">100% automated test pass rate across 12 comprehensive integration suites.</p>
+					<div class="section-header">
+						<div class="mono-tag">Quality Gate</div>
+						<h2 class="section-heading">Automated Verification Matrix</h2>
 					</div>
 
-					<div class="qa-stats">
-						<div class="glass-card qa-stat">
-							<div class="stat-num text-cyan">40 / 40</div>
-							<div class="stat-label">Automated Tests Passing</div>
+					<div class="matrix-grid">
+						<div class="matrix-card">
+							<div class="matrix-val">40 / 40</div>
+							<div class="matrix-label">Integration Tests Passing</div>
 						</div>
-						<div class="glass-card qa-stat">
-							<div class="stat-num text-purple">12 / 12</div>
-							<div class="stat-label">Test Suites Validated</div>
+						<div class="matrix-card">
+							<div class="matrix-val">12 / 12</div>
+							<div class="matrix-label">Test Suites Validated</div>
 						</div>
-						<div class="glass-card qa-stat">
-							<div class="stat-num text-emerald">0</div>
-							<div class="stat-label">TypeScript & ESLint Errors</div>
+						<div class="matrix-card">
+							<div class="matrix-val">0</div>
+							<div class="matrix-label">TypeScript & ESLint Errors</div>
 						</div>
 					</div>
 				</div>
 			</section>
 
-			<!-- 📦 DOWNLOAD CTA SECTION -->
-			<section id="download" class="cta-section">
-				<div class="container text-center">
-					<div class="glass-card cta-box">
-						<h2 class="gradient-text" style="font-size: 2.5rem; margin-bottom: 1rem;">Ready to Upgrade Your Remote Workflow?</h2>
-						<p style="color: var(--text-muted); font-size: 1.1rem; max-width: 600px; margin: 0 auto 2rem auto;">
-							Download Aegis v1.0.0 for Windows or build from source for Linux and macOS. Free, open-source, and zero-knowledge encrypted.
+			<!-- RELEASES CTA -->
+			<section class="cta-section">
+				<div class="container">
+					<div class="cta-card">
+						<h2 class="editorial-title">Ready to deploy Aegis?</h2>
+						<p class="cta-desc">
+							Download Aegis v1.0.0 for Windows (NSIS Installer) or inspect the open-source repository on GitHub.
 						</p>
-
-						<div class="cta-buttons">
-							<a href="https://github.com/mukeshv-tech/Aegis/releases/" target="_blank" rel="noopener" class="btn btn-primary btn-xl">
-								🚀 View GitHub Releases (v1.0.0)
+						<div class="cta-actions">
+							<a href="https://github.com/mukeshv-tech/Aegis/releases/" target="_blank" rel="noopener" class="btn btn-primary">
+								View GitHub Releases (v1.0.0)
 							</a>
-							<a href="https://github.com/mukeshv-tech/Aegis" target="_blank" class="btn btn-secondary btn-xl">
-								⭐ View Source Code
+							<a href="https://github.com/mukeshv-tech/Aegis" target="_blank" rel="noopener" class="btn btn-secondary">
+								Source Repository
 							</a>
 						</div>
 					</div>
@@ -288,220 +280,210 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 
 <style>
 	.hero-section {
-		padding: 6rem 0 4rem 0;
-		text-align: center;
+		padding: 7rem 0 5rem 0;
 	}
-	.hero-container {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-	}
-	.hero-badge {
+	.hero-meta {
 		margin-bottom: 1.5rem;
 	}
-	.hero-title {
-		font-size: 3.5rem;
-		font-weight: 900;
-		line-height: 1.15;
-		letter-spacing: -0.03em;
+	.hero-heading {
+		max-width: 900px;
 		margin-bottom: 1.5rem;
 	}
-	.hero-subtitle {
-		font-size: 1.2rem;
+	.hero-desc {
+		font-size: 1.15rem;
 		color: var(--text-muted);
-		max-width: 780px;
-		margin-bottom: 2.5rem;
+		max-width: 720px;
 		line-height: 1.7;
+		margin-bottom: 2.5rem;
 	}
 	.hero-actions {
 		display: flex;
 		gap: 1rem;
-		margin-bottom: 3rem;
+		margin-bottom: 2rem;
 		flex-wrap: wrap;
-		justify-content: center;
 	}
-	.btn-lg {
-		padding: 1rem 2rem;
-		font-size: 1.05rem;
-	}
-	.btn-xl {
-		padding: 1.15rem 2.25rem;
-		font-size: 1.15rem;
-	}
-	.hero-pills {
-		display: flex;
-		gap: 1rem;
-		flex-wrap: wrap;
-		justify-content: center;
-	}
-	.pill {
-		background: rgba(255, 255, 255, 0.04);
-		border: 1px solid var(--border-color);
-		padding: 0.5rem 1.25rem;
-		border-radius: 9999px;
-		font-size: 0.875rem;
-		font-weight: 500;
-		color: var(--text-muted);
-	}
-
-	/* Features Grid */
-	.section-title {
-		margin-bottom: 3.5rem;
-	}
-	.text-center {
-		text-align: center;
-	}
-	.section-title h2 {
-		font-size: 2.25rem;
-		font-weight: 800;
-		margin: 0.75rem 0;
-	}
-	.section-desc {
-		color: var(--text-muted);
-		font-size: 1.1rem;
-	}
-
-	.features-grid {
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-		gap: 1.75rem;
-	}
-	.feature-card {
-		display: flex;
-		flex-direction: column;
-		gap: 1rem;
-	}
-	.icon-box {
-		width: 3.25rem;
-		height: 3.25rem;
-		border-radius: 0.875rem;
+	.hero-shortcut {
+		font-family: var(--font-mono);
+		font-size: 0.8125rem;
+		color: var(--text-dim);
 		display: flex;
 		align-items: center;
-		justify-content: center;
-		font-size: 1.5rem;
+		gap: 0.5rem;
 	}
-	.icon-purple { background: rgba(139, 92, 246, 0.15); border: 1px solid rgba(139, 92, 246, 0.3); }
-	.icon-cyan { background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.3); }
-	.icon-blue { background: rgba(59, 130, 246, 0.15); border: 1px solid rgba(59, 130, 246, 0.3); }
-	.icon-emerald { background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.3); }
-	.icon-amber { background: rgba(245, 158, 11, 0.15); border: 1px solid rgba(245, 158, 11, 0.3); }
 
-	.feature-card h3 {
-		font-size: 1.25rem;
+	/* Section Headers */
+	.section-header {
+		margin-bottom: 3rem;
+	}
+	.section-heading {
+		font-size: 2rem;
 		font-weight: 700;
-		color: var(--text-main);
-	}
-	.feature-card p {
-		color: var(--text-muted);
-		font-size: 0.9375rem;
-		line-height: 1.6;
+		margin-top: 0.5rem;
+		letter-spacing: -0.02em;
 	}
 
-	/* Security Section */
-	.security-grid {
+	/* Bento Grid */
+	.bento-grid {
 		display: grid;
 		grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
 		gap: 1.5rem;
 	}
-	.security-card h4 {
-		font-size: 1.1rem;
+	.card-meta {
+		margin-bottom: 1.25rem;
+	}
+	.bento-card h3 {
+		font-size: 1.15rem;
 		font-weight: 700;
-		margin-bottom: 0.5rem;
+		margin-bottom: 0.75rem;
 		color: var(--text-main);
 	}
-	.security-card p {
+	.bento-card p {
+		font-size: 0.875rem;
 		color: var(--text-muted);
-		font-size: 0.9rem;
+		line-height: 1.6;
 	}
 
-	/* Architecture Box */
-	.architecture-box {
+	/* Spec Table */
+	.spec-table {
+		border: 1px solid var(--border-light);
+		border-radius: 8px;
+		background: var(--bg-surface);
+		overflow: hidden;
+	}
+	.spec-row {
+		display: grid;
+		grid-template-columns: 240px 1fr;
+		padding: 1.25rem 1.75rem;
+		border-bottom: 1px solid var(--border-light);
+	}
+	.spec-row:last-child {
+		border-bottom: none;
+	}
+	.spec-key {
+		font-family: var(--font-mono);
+		font-size: 0.8125rem;
+		font-weight: 700;
+		color: var(--text-main);
+	}
+	.spec-val {
+		font-size: 0.875rem;
+		color: var(--text-muted);
+	}
+
+	/* Faux-OS Window */
+	.window-chrome {
+		background: var(--bg-surface);
+		border: 1px solid var(--border-light);
+		border-radius: 8px;
+		overflow: hidden;
+	}
+	.window-header {
+		background: var(--bg-card);
+		border-bottom: 1px solid var(--border-light);
+		padding: 0.75rem 1.25rem;
+		display: flex;
+		align-items: center;
+		gap: 1rem;
+	}
+	.window-dots {
+		display: flex;
+		gap: 0.4rem;
+	}
+	.dot {
+		width: 10px;
+		height: 10px;
+		border-radius: 50%;
+		background: var(--border-strong);
+	}
+	.window-title {
+		font-family: var(--font-mono);
+		font-size: 0.75rem;
+		color: var(--text-dim);
+	}
+	.window-body {
+		padding: 2.5rem;
 		display: flex;
 		flex-direction: column;
 		gap: 1.5rem;
 		align-items: center;
-		padding: 3rem;
 	}
-	.arch-layer {
+	.topo-block {
 		width: 100%;
-		max-width: 800px;
-		background: rgba(255, 255, 255, 0.03);
-		border: 1px solid var(--border-color);
-		border-radius: 1rem;
-		padding: 1.5rem;
+		max-width: 700px;
+		background: var(--bg-card);
+		border: 1px solid var(--border-light);
+		border-radius: 6px;
+		padding: 1.25rem;
 		text-align: center;
 	}
-	.layer-title {
+	.topo-title {
+		font-family: var(--font-mono);
+		font-size: 0.875rem;
 		font-weight: 700;
-		font-size: 1.1rem;
-		margin-bottom: 1rem;
+		color: var(--text-main);
+		margin-bottom: 0.35rem;
 	}
-	.layer-pills {
-		display: flex;
-		gap: 0.75rem;
-		flex-wrap: wrap;
-		justify-content: center;
+	.topo-desc {
+		font-size: 0.8125rem;
+		color: var(--text-muted);
 	}
-	.layer-pills span {
-		background: rgba(56, 189, 248, 0.1);
-		color: var(--accent-cyan);
-		border: 1px solid rgba(56, 189, 248, 0.2);
-		padding: 0.35rem 0.85rem;
-		border-radius: 0.5rem;
-		font-size: 0.85rem;
+	.topo-divider {
+		font-family: var(--font-mono);
+		font-size: 0.75rem;
+		color: var(--pastel-blue-text);
 		font-weight: 600;
 	}
-	.arch-arrow {
-		color: var(--accent-purple);
-		font-weight: 700;
-		font-size: 0.9rem;
-		letter-spacing: 0.05em;
-	}
 
-	/* QA Stats */
-	.qa-stats {
+	/* Verification Matrix */
+	.matrix-grid {
 		display: grid;
 		grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-		gap: 2rem;
+		gap: 1.5rem;
 	}
-	.qa-stat {
+	.matrix-card {
+		background: var(--bg-surface);
+		border: 1px solid var(--border-light);
+		border-radius: 8px;
+		padding: 2rem;
 		text-align: center;
-		padding: 2.5rem;
 	}
-	.stat-num {
-		font-size: 3rem;
-		font-weight: 900;
-		letter-spacing: -0.03em;
+	.matrix-val {
+		font-family: var(--font-mono);
+		font-size: 2.5rem;
+		font-weight: 700;
+		color: var(--text-main);
 		margin-bottom: 0.5rem;
 	}
-	.text-cyan { color: var(--accent-cyan); }
-	.text-purple { color: var(--accent-purple); }
-	.text-emerald { color: var(--accent-emerald); }
-	.stat-label {
+	.matrix-label {
+		font-size: 0.875rem;
 		color: var(--text-muted);
-		font-weight: 600;
-		font-size: 1rem;
 	}
 
-	/* CTA Box */
-	.cta-box {
+	/* CTA Card */
+	.cta-card {
+		background: var(--bg-surface);
+		border: 1px solid var(--border-strong);
+		border-radius: 8px;
 		padding: 4rem 2rem;
-		background: linear-gradient(135deg, rgba(56, 189, 248, 0.05) 0%, rgba(139, 92, 246, 0.05) 100%);
-		border: 1px solid var(--border-accent);
+		text-align: center;
 	}
-	.cta-buttons {
+	.cta-desc {
+		color: var(--text-muted);
+		font-size: 1.1rem;
+		max-width: 600px;
+		margin: 1rem auto 2.5rem auto;
+	}
+	.cta-actions {
 		display: flex;
-		gap: 1.25rem;
+		gap: 1rem;
 		justify-content: center;
 		flex-wrap: wrap;
 	}
 
 	@media (max-width: 768px) {
-		.hero-title {
-			font-size: 2.5rem;
-		}
-		.hero-subtitle {
-			font-size: 1.05rem;
+		.spec-row {
+			grid-template-columns: 1fr;
+			gap: 0.5rem;
 		}
 	}
 </style>

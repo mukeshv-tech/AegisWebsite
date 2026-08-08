@@ -1,93 +1,108 @@
 ---
-const today = new Date();
+const year = new Date().getFullYear();
 ---
 
 <footer>
-  <div class="container footer-content">
-    <div class="footer-brand">
-      <div class="brand-title">
-        <span>🛡️</span>
-        <span class="gradient-text" style="font-weight: 800; font-size: 1.25rem;">Aegis Workstation</span>
-      </div>
-      <p style="color: var(--text-muted); font-size: 0.875rem; margin-top: 0.5rem; max-width: 360px;">
-        Zero-trust desktop workstation for DevOps leads, SREs, and security engineers. Scrypt vault encryption, WebGL terminal, SFTP browser, and parallel execution.
+  <div class="container footer-grid">
+    <div class="footer-info">
+      <div class="footer-logo">[AEGIS // WORKSTATION]</div>
+      <p class="footer-desc">
+        Zero-trust remote environment desktop workstation. Built with Electron, React 19, TypeScript 5.7, and Xterm.js v5.5.
       </p>
     </div>
 
-    <div class="footer-column">
-      <h4>Navigation</h4>
+    <div class="footer-col">
+      <div class="col-title">Navigation</div>
       <ul>
         <li><a href="#features">Features</a></li>
-        <li><a href="#security">Security Specs</a></li>
+        <li><a href="#security">Security Standard</a></li>
         <li><a href="#architecture">Architecture</a></li>
-        <li><a href="#qa">Automated Tests</a></li>
+        <li><a href="#qa">Verification Matrix</a></li>
       </ul>
     </div>
 
-    <div class="footer-column">
-      <h4>Resources</h4>
+    <div class="footer-col">
+      <div class="col-title">Resources</div>
       <ul>
-        <li><a href="https://github.com/mukeshv-tech/Aegis" target="_blank">GitHub Repository</a></li>
-        <li><a href="https://github.com/mukeshv-tech/Aegis/releases/" target="_blank">GitHub Releases (v1.0.0)</a></li>
-        <li><a href="https://github.com/mukeshv-tech/Aegis/actions" target="_blank">GitHub Actions CI/CD</a></li>
-        <li><a href="https://github.com/mukeshv-tech/Aegis/blob/Electron/README.md" target="_blank">Technical Documentation</a></li>
+        <li><a href="https://github.com/mukeshv-tech/Aegis" target="_blank" rel="noopener">GitHub Repository</a></li>
+        <li><a href="https://github.com/mukeshv-tech/Aegis/releases/" target="_blank" rel="noopener">Releases Page (v1.0.0)</a></li>
+        <li><a href="https://github.com/mukeshv-tech/Aegis/actions" target="_blank" rel="noopener">GitHub Actions CI/CD</a></li>
+        <li><a href="https://github.com/mukeshv-tech/Aegis/blob/Electron/README.md" target="_blank" rel="noopener">Technical Documentation</a></li>
       </ul>
     </div>
   </div>
 
-  <div class="container footer-bottom">
-    <p>&copy; {today.getFullYear()} <strong>Aegis</strong> by <a href="https://github.com/mukeshv-tech" target="_blank">Mukesh (@mukeshv-tech)</a>. Built with Electron, React 19, TypeScript, Vite, TailwindCSS, & Astro.</p>
+  <div class="container footer-meta">
+    <span>&copy; {year} Aegis Project. Author: Mukesh (@mukeshv-tech). MIT License.</span>
   </div>
 </footer>
 
 <style>
   footer {
-    background: #06080e;
-    border-top: 1px solid var(--border-color);
-    padding: 4rem 0 2rem 0;
+    background: var(--bg-primary);
+    border-top: 1px solid var(--border-light);
+    padding: 5rem 0 3rem 0;
     margin-top: auto;
   }
-  .footer-content {
+
+  .footer-grid {
     display: grid;
     grid-template-columns: 2fr 1fr 1fr;
     gap: 3rem;
     padding-bottom: 3rem;
-    border-bottom: 1px solid var(--border-color);
+    border-bottom: 1px solid var(--border-light);
   }
-  .brand-title {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-  }
-  .footer-column h4 {
-    font-size: 0.9375rem;
+
+  .footer-logo {
+    font-family: var(--font-mono);
     font-weight: 700;
+    font-size: 1rem;
     color: var(--text-main);
-    margin-bottom: 1rem;
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
+    margin-bottom: 0.75rem;
   }
-  .footer-column ul {
+
+  .footer-desc {
+    color: var(--text-muted);
+    font-size: 0.875rem;
+    max-width: 360px;
+    line-height: 1.6;
+  }
+
+  .col-title {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-bottom: 1rem;
+  }
+
+  .footer-col ul {
     list-style: none;
     display: flex;
     flex-direction: column;
     gap: 0.625rem;
   }
-  .footer-column a {
+
+  .footer-col a {
     color: var(--text-muted);
     font-size: 0.875rem;
   }
-  .footer-column a:hover {
-    color: var(--accent-cyan);
+
+  .footer-col a:hover {
+    color: var(--text-main);
   }
-  .footer-bottom {
+
+  .footer-meta {
     padding-top: 2rem;
-    text-align: center;
-    font-size: 0.875rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
     color: var(--text-dim);
+    text-align: center;
   }
+
   @media (max-width: 768px) {
-    .footer-content {
+    .footer-grid {
       grid-template-columns: 1fr;
       gap: 2rem;
     }
