@@ -34,12 +34,25 @@ Record terminal sessions with microsecond precision and replay recordings inside
 
 ---
 
+### Zero-Trust Security Specification
+
+Security is the primary design pillar of Aegis. v1.0.0 incorporates several cryptographic safeguards:
+
+- **GPU-Resistant Scrypt KDF**: Replaced legacy derivation algorithms with Scrypt (`N=16384, r=8, p=1`) utilizing 16-byte random salts to withstand brute-force attempts.
+- **AES-256-GCM Authenticated Payload Protection**: Every vault item uses a 96-bit random IV and a 128-bit authentication tag to verify data integrity before decryption.
+- **Volatile Process Memory Wiping**: Master key Buffer objects allocated in process RAM are zero-filled (`masterKey.fill(0)`) immediately upon vault lock or application shutdown.
+- **Command Injection Guardrails**: Remote shell parameters pass through single-quote argument escaping (`escapeShellArg`) to neutralize subshell execution attempts.
+- **Path Boundary Validation**: File operations enforce strict `path.basename()` boundary checks to prevent path traversal vulnerability vectors.
+- **Atomic Storage Handlers**: File storage implementations execute inside atomic `try/catch` blocks without TOCTOU pre-checks.
+
+---
+
 ### Zero-Defect Quality Gate
 
 Aegis v1.0.0 has completed rigorous verification:
 - **40 / 40 Automated Integration Tests Passing** across 12 test suites.
 - **0 TypeScript Compiler Errors** & **0 ESLint Warnings**.
-- Atomic file operations engineered to eliminate TOCTOU file race condition risks.
+- Full CI/CD automation via GitHub Actions matrix workflows.
 
 ---
 

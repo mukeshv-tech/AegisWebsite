@@ -178,6 +178,78 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 				</div>
 			</section>
 
+			<!-- SECURITY SPECIFICATIONS -->
+			<section id="security">
+				<div class="container">
+					<div class="section-header">
+						<div class="mono-tag">Security Architecture</div>
+						<h2 class="section-heading">Zero-Trust Cryptographic Specifications</h2>
+					</div>
+
+					<div class="bento-grid">
+						<div class="bento-card">
+							<div class="card-meta">
+								<span class="pastel-tag tag-purple">KEY DERIVATION</span>
+							</div>
+							<h3>Scrypt Key Derivation (KDF)</h3>
+							<p>
+								Master passwords derive encryption keys using GPU-resistant <strong>Scrypt KDF</strong> (N=16384, r=8, p=1) with 16-byte cryptographically secure random salts.
+							</p>
+						</div>
+
+						<div class="bento-card">
+							<div class="card-meta">
+								<span class="pastel-tag tag-blue">AUTHENTICATED ENCRYPTION</span>
+							</div>
+							<h3>AES-256-GCM Payload Protection</h3>
+							<p>
+								Vault credentials and private keys are encrypted with <strong>AES-256-GCM</strong> using 96-bit random IVs and 128-bit authentication tags to detect tampering.
+							</p>
+						</div>
+
+						<div class="bento-card">
+							<div class="card-meta">
+								<span class="pastel-tag tag-green">MEMORY HYGIENE</span>
+							</div>
+							<h3>Volatile Memory Buffer Wiping</h3>
+							<p>
+								Decrypted master key allocations stored in process RAM are automatically zero-filled (<code>masterKey.fill(0)</code>) immediately upon locking the vault.
+							</p>
+						</div>
+
+						<div class="bento-card">
+							<div class="card-meta">
+								<span class="pastel-tag tag-amber">INPUT SANITIZATION</span>
+							</div>
+							<h3>Command Injection Escaping</h3>
+							<p>
+								Dynamic remote shell parameters and batch automation execution pass through single-quote shell argument escaping to prevent injection exploits.
+							</p>
+						</div>
+
+						<div class="bento-card">
+							<div class="card-meta">
+								<span class="pastel-tag tag-purple">PATH ISOLATION</span>
+							</div>
+							<h3>Path Traversal Bounds Check</h3>
+							<p>
+								Key generation and plugin loading file paths enforce strict <code>path.basename()</code> boundary validation to reject path traversal attempts.
+							</p>
+						</div>
+
+						<div class="bento-card">
+							<div class="card-meta">
+								<span class="pastel-tag tag-blue">SSH SUITE</span>
+							</div>
+							<h3>SSH Cipher & Policy Control</h3>
+							<p>
+								Restricts SSH negotiation to ciphers (AES-GCM and ChaCha20-Poly1305), enforces vault password complexity, and controls tunnel creation.
+							</p>
+						</div>
+					</div>
+				</div>
+			</section>
+
 			<!-- FAUX-OS ARCHITECTURE WINDOW -->
 			<section id="architecture">
 				<div class="container">
