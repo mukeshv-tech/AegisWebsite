@@ -24,7 +24,7 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 					</h1>
 
 					<p class="hero-desc">
-						Aegis is an enterprise desktop workstation combining WebGL terminal emulation, zero-knowledge Scrypt vault encryption, parallel multi-server execution, and cross-distro vitals telemetry into a unified local environment.
+						Aegis is a desktop workstation combining a WebGL terminal emulator, zero-knowledge encrypted vault, parallel multi-server script automation, and live system telemetry into a single unified workstation.
 					</p>
 
 					<div class="hero-actions">
@@ -42,149 +42,112 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 				</div>
 			</section>
 
-			<!-- BENTO FEATURES GRID -->
+			<!-- MAIN FEATURES GRID -->
 			<section id="features">
 				<div class="container">
 					<div class="section-header">
-						<div class="mono-tag">Subsystem Architecture</div>
-						<h2 class="section-heading">Built for High-Consequence Operations</h2>
+						<div class="mono-tag">Core Subsystems</div>
+						<h2 class="section-heading">Everything you need for remote management</h2>
 					</div>
 
 					<div class="bento-grid">
-						<!-- Bento Card 1 -->
-						<div class="bento-card">
-							<div class="card-meta">
-								<span class="pastel-tag tag-purple">CRYPTO VAULT</span>
-							</div>
-							<h3>Zero-Knowledge Cryptographic Vault</h3>
-							<p>
-								Secured with GPU-resistant Scrypt key derivation (N=16384, r=8, p=1) and AES-256-GCM authenticated encryption. Decrypted master key allocations in process memory are zero-filled immediately upon vault locking.
-							</p>
-						</div>
-
-						<!-- Bento Card 2 -->
+						<!-- Feature 1 -->
 						<div class="bento-card">
 							<div class="card-meta">
 								<span class="pastel-tag tag-blue">TERMINAL ENGINE</span>
 							</div>
-							<h3>WebGL Terminal & Native Zmodem</h3>
+							<h3>WebGL Terminal & Zmodem Transfers</h3>
 							<p>
-								Powered by @xterm/xterm v5.5 with WebGL acceleration, search addons, and clickable web links. Features native inline sz and rz Zmodem file transfers directly inside active terminal viewports.
+								Ultra-fast terminal emulator powered by Xterm.js with WebGL acceleration, search addons, and inline sz/rz Zmodem file transfers directly inside active sessions.
 							</p>
 						</div>
 
-						<!-- Bento Card 3 -->
+						<!-- Feature 2 -->
+						<div class="bento-card">
+							<div class="card-meta">
+								<span class="pastel-tag tag-purple">VAULT SECURITY</span>
+							</div>
+							<h3>Zero-Knowledge Encrypted Vault</h3>
+							<p>
+								Store server connections and private keys safely. Encrypted with Scrypt key derivation and AES-256-GCM authenticated encryption. Memory buffers are wiped when locked.
+							</p>
+						</div>
+
+						<!-- Feature 3 -->
 						<div class="bento-card">
 							<div class="card-meta">
 								<span class="pastel-tag tag-green">FILE MANAGER</span>
 							</div>
 							<h3>SFTP Browser & Remote Editor</h3>
 							<p>
-								Multi-pane remote file explorer supporting drag-and-drop uploads, live code editing, permission management, and single-click remote directory compression and extraction (.tar.gz / .zip).
+								Multi-pane remote file explorer supporting drag-and-drop file transfers, direct file editing, permission management, and single-click directory archiving (.tar.gz / .zip).
 							</p>
 						</div>
 
-						<!-- Bento Card 4 -->
+						<!-- Feature 4 -->
 						<div class="bento-card">
 							<div class="card-meta">
 								<span class="pastel-tag tag-amber">NETWORKING</span>
 							</div>
 							<h3>Bastion Hosts & Port Tunneling</h3>
 							<p>
-								Native multi-hop SSH proxy forwarding via sshClient.forwardOut() for isolated VPCs. Establish and monitor Local (-L) and Remote (-R) SSH port forwarding tunnels with real-time port validation.
+								Connect to isolated remote networks via SSH jump hosts. Establish and monitor Local (-L) and Remote (-R) SSH port forwarding tunnels with live port status checks.
 							</p>
 						</div>
 
-						<!-- Bento Card 5 -->
+						<!-- Feature 5 -->
 						<div class="bento-card">
 							<div class="card-meta">
 								<span class="pastel-tag tag-purple">TELEMETRY</span>
 							</div>
-							<h3>Cross-Distro System Vitals</h3>
+							<h3>Live System Vitals Telemetry</h3>
 							<p>
-								Single-pipe telemetric parser delivering live CPU, RAM, and Disk metrics every 3000ms. Compatible with Ubuntu, Debian, CentOS, RHEL, Arch, Alpine (BusyBox), and macOS/BSD hosts.
+								Monitor real-time CPU, RAM, and Disk metrics polled every 3000ms. Compatible with Ubuntu, Debian, CentOS, RHEL, Arch, Alpine Linux, and macOS/BSD hosts.
 							</p>
 						</div>
 
-						<!-- Bento Card 6 -->
+						<!-- Feature 6 -->
 						<div class="bento-card">
 							<div class="card-meta">
 								<span class="pastel-tag tag-blue">AUTOMATION</span>
 							</div>
-							<h3>Parallel Multi-Server Execution</h3>
+							<h3>Parallel Multi-Server Script Execution</h3>
 							<p>
-								Execute shell automation scripts across multiple remote servers simultaneously. Features real-time log aggregation and reusable snippet templates with ${"{variable}"} substitution.
+								Execute shell scripts across multiple remote servers simultaneously. Includes real-time log aggregation and reusable command templates with ${"{variable}"} substitution.
 							</p>
 						</div>
 
-						<!-- Bento Card 7 -->
+						<!-- Feature 7 -->
 						<div class="bento-card">
 							<div class="card-meta">
-								<span class="pastel-tag tag-green">AUDIT LOGGING</span>
+								<span class="pastel-tag tag-green">RECORDING</span>
 							</div>
 							<h3>ANSI Session Recording & Replay</h3>
 							<p>
-								Record terminal sessions with microsecond precision. Replay sessions inside Aegis using integrated playback controls (Play, Pause, 1x-4x Speed, and timeline scrubbing).
+								Record terminal sessions with microsecond precision. Replay session recordings inside Aegis using integrated playback controls (Play, Pause, 1x-4x Speed, and timeline scrub bar).
 							</p>
 						</div>
 
-						<!-- Bento Card 8 -->
+						<!-- Feature 8 -->
 						<div class="bento-card">
 							<div class="card-meta">
 								<span class="pastel-tag tag-amber">EXTENSIBILITY</span>
 							</div>
-							<h3>Dynamic Plugin Engine & Styling</h3>
+							<h3>Custom Plugins & Theme Color Palettes</h3>
 							<p>
-								Extend functionality via custom JavaScript plugins loaded dynamically with JSDoc metadata parsing. Customize themes and styling with the built-in aegisApi color palette bridge.
+								Extend Aegis functionality with custom JavaScript plugins and personalize UI theme color palettes to match your workstation preference.
 							</p>
 						</div>
 
-						<!-- Bento Card 9 -->
+						<!-- Feature 9 -->
 						<div class="bento-card">
 							<div class="card-meta">
-								<span class="pastel-tag tag-purple">POLICY ENGINE</span>
+								<span class="pastel-tag tag-purple">POLICY CONTROL</span>
 							</div>
 							<h3>Enterprise Security Policies</h3>
 							<p>
-								Enforce master password complexity rules, restrict port forwarding creation globally, and limit SSH negotiation to approved ciphers (AES-GCM and ChaCha20-Poly1305).
+								Enforce password complexity rules, restrict port forwarding tunnel creation globally, and restrict SSH negotiation to approved ciphers.
 							</p>
-						</div>
-					</div>
-				</div>
-			</section>
-
-			<!-- SECURITY SPECIFICATION -->
-			<section id="security">
-				<div class="container">
-					<div class="section-header">
-						<div class="mono-tag">Threat Model & Hardening</div>
-						<h2 class="section-heading">Zero-Trust Cryptographic Standard</h2>
-					</div>
-
-					<div class="spec-table">
-						<div class="spec-row">
-							<div class="spec-key">Key Derivation</div>
-							<div class="spec-val">Scrypt (N=16384, r=8, p=1) with 16-byte random salts</div>
-						</div>
-						<div class="spec-row">
-							<div class="spec-key">Authenticated Encryption</div>
-							<div class="spec-val">AES-256-GCM with 96-bit random IVs and 128-bit authentication tags</div>
-						</div>
-						<div class="spec-row">
-							<div class="spec-key">Process RAM Safety</div>
-							<div class="spec-val">Decrypted master key allocations zero-filled (masterKey.fill(0)) on vault lock</div>
-						</div>
-						<div class="spec-row">
-							<div class="spec-key">Command Escaping</div>
-							<div class="spec-val">escapeShellArg single-quote encapsulation preventing subshell injection</div>
-						</div>
-						<div class="spec-row">
-							<div class="spec-key">Path Traversal Guards</div>
-							<div class="spec-val">path.basename() bounds checking on key generation and plugin file paths</div>
-						</div>
-						<div class="spec-row">
-							<div class="spec-key">TOCTOU Race Condition Removal</div>
-							<div class="spec-val">Atomic store operations inside try/catch blocks without non-atomic existsSync pre-checks</div>
 						</div>
 					</div>
 				</div>
@@ -195,10 +158,9 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 				<div class="container">
 					<div class="section-header">
 						<div class="mono-tag">System Topology</div>
-						<h2 class="section-heading">Process Isolation & Architecture</h2>
+						<h2 class="section-heading">Built on modern, isolated architecture</h2>
 					</div>
 
-					<!-- Faux-OS Window Chrome -->
 					<div class="window-chrome">
 						<div class="window-header">
 							<div class="window-dots">
@@ -210,44 +172,19 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 						</div>
 						<div class="window-body">
 							<div class="topo-block">
-								<div class="topo-title">RENDERER PROCESS [React 19 + Vite]</div>
-								<div class="topo-desc">Xterm.js Terminal Viewport // SFTP Explorer // Vitals Bar // Batch Engine</div>
+								<div class="topo-title">RENDERER INTERFACE [React 19 + Vite]</div>
+								<div class="topo-desc">Xterm.js Terminal Viewport // SFTP Explorer // System Vitals Bar // Batch Automation</div>
 							</div>
-							<div class="topo-divider">↓ SECURE PRELOAD IPC BRIDGE (Context Isolation) ↓</div>
+							<div class="topo-divider">↓ SECURE PRELOAD IPC BRIDGE ↓</div>
 							<div class="topo-block">
-								<div class="topo-title">MAIN PROCESS [Electron 43.3 / Node 22]</div>
-								<div class="topo-desc">Scrypt Vault // SSH2 Bastion Proxy // Local PTY // Vitals Telemetry Parser</div>
+								<div class="topo-title">DESKTOP MAIN PROCESS [Electron 43.3 / Node 22]</div>
+								<div class="topo-desc">Scrypt Vault // SSH2 Proxy & Bastion Router // Local PTY // Vitals Parser</div>
 							</div>
 							<div class="topo-divider">↓ ENCRYPTED NETWORK PROTOCOLS ↓</div>
 							<div class="topo-block">
 								<div class="topo-title">TARGET INFRASTRUCTURE</div>
 								<div class="topo-desc">Ubuntu / Debian / RHEL / Arch / Alpine / macOS / BSD Hosts</div>
 							</div>
-						</div>
-					</div>
-				</div>
-			</section>
-
-			<!-- VERIFICATION MATRIX -->
-			<section id="qa">
-				<div class="container">
-					<div class="section-header">
-						<div class="mono-tag">Quality Gate</div>
-						<h2 class="section-heading">Automated Verification Matrix</h2>
-					</div>
-
-					<div class="matrix-grid">
-						<div class="matrix-card">
-							<div class="matrix-val">40 / 40</div>
-							<div class="matrix-label">Integration Tests Passing</div>
-						</div>
-						<div class="matrix-card">
-							<div class="matrix-val">12 / 12</div>
-							<div class="matrix-label">Test Suites Validated</div>
-						</div>
-						<div class="matrix-card">
-							<div class="matrix-val">0</div>
-							<div class="matrix-label">TypeScript & ESLint Errors</div>
 						</div>
 					</div>
 				</div>
@@ -343,33 +280,6 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 		line-height: 1.6;
 	}
 
-	/* Spec Table */
-	.spec-table {
-		border: 1px solid var(--border-light);
-		border-radius: 8px;
-		background: var(--bg-surface);
-		overflow: hidden;
-	}
-	.spec-row {
-		display: grid;
-		grid-template-columns: 240px 1fr;
-		padding: 1.25rem 1.75rem;
-		border-bottom: 1px solid var(--border-light);
-	}
-	.spec-row:last-child {
-		border-bottom: none;
-	}
-	.spec-key {
-		font-family: var(--font-mono);
-		font-size: 0.8125rem;
-		font-weight: 700;
-		color: var(--text-main);
-	}
-	.spec-val {
-		font-size: 0.875rem;
-		color: var(--text-muted);
-	}
-
 	/* Faux-OS Window */
 	.window-chrome {
 		background: var(--bg-surface);
@@ -434,31 +344,6 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 		font-weight: 600;
 	}
 
-	/* Verification Matrix */
-	.matrix-grid {
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-		gap: 1.5rem;
-	}
-	.matrix-card {
-		background: var(--bg-surface);
-		border: 1px solid var(--border-light);
-		border-radius: 8px;
-		padding: 2rem;
-		text-align: center;
-	}
-	.matrix-val {
-		font-family: var(--font-mono);
-		font-size: 2.5rem;
-		font-weight: 700;
-		color: var(--text-main);
-		margin-bottom: 0.5rem;
-	}
-	.matrix-label {
-		font-size: 0.875rem;
-		color: var(--text-muted);
-	}
-
 	/* CTA Card */
 	.cta-card {
 		background: var(--bg-surface);
@@ -478,12 +363,5 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 		gap: 1rem;
 		justify-content: center;
 		flex-wrap: wrap;
-	}
-
-	@media (max-width: 768px) {
-		.spec-row {
-			grid-template-columns: 1fr;
-			gap: 0.5rem;
-		}
 	}
 </style>
