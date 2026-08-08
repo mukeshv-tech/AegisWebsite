@@ -6,6 +6,11 @@ import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 import { verifyAdminSession, DEFAULT_ADMIN_PASSWORD } from '../../lib/auth';
 
+// Disable browser caching for admin dashboard
+Astro.response.headers.set("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0");
+Astro.response.headers.set("Pragma", "no-cache");
+Astro.response.headers.set("Expires", "0");
+
 const envPassword = process.env.ADMIN_PASSWORD || DEFAULT_ADMIN_PASSWORD;
 const isAuthenticated = await verifyAdminSession(Astro.request, envPassword);
 
@@ -156,11 +161,15 @@ if (!isAuthenticated) {
 				}
 			});
 
-			// Logout
+			// Logout with strict session clearing
 			const logoutBtn = document.getElementById('logout-btn') as HTMLButtonElement;
 			logoutBtn?.addEventListener('click', async () => {
-				await fetch('/api/auth/logout', { method: 'POST' });
-				window.location.href = '/admin/login';
+				try {
+					await fetch('/api/auth/logout', { method: 'POST' });
+				} catch (e) {}
+				sessionStorage.clear();
+				localStorage.clear();
+				window.location.replace('/admin/login');
 			});
 		</script>
 	</body>

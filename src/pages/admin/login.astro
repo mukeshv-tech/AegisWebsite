@@ -6,6 +6,11 @@ import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 import { verifyAdminSession, DEFAULT_ADMIN_PASSWORD } from '../../lib/auth';
 
+// Disable browser caching for admin login
+Astro.response.headers.set("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0");
+Astro.response.headers.set("Pragma", "no-cache");
+Astro.response.headers.set("Expires", "0");
+
 const envPassword = process.env.ADMIN_PASSWORD || DEFAULT_ADMIN_PASSWORD;
 const isAuthenticated = await verifyAdminSession(Astro.request, envPassword);
 
@@ -31,10 +36,10 @@ if (isAuthenticated) {
 					<h1 class="editorial-title login-title">Aegis Admin Portal</h1>
 					<p class="login-desc">Enter your master admin key to manage blog posts and product updates.</p>
 
-					<form id="login-form" class="login-form">
+					<form id="login-form" class="login-form" autocomplete="off">
 						<div class="form-group">
 							<label for="password" class="mono-tag">Master Admin Password</label>
-							<input type="password" id="password" name="password" required placeholder="••••••••••••" class="form-input" />
+							<input type="password" id="password" name="password" required autocomplete="off" placeholder="••••••••••••" class="form-input" />
 						</div>
 
 						<div id="error-msg" class="error-msg" style="display: none;"></div>
@@ -53,6 +58,12 @@ if (isAuthenticated) {
 			const form = document.getElementById('login-form') as HTMLFormElement;
 			const errorMsg = document.getElementById('error-msg') as HTMLDivElement;
 			const submitBtn = document.getElementById('submit-btn') as HTMLButtonElement;
+			const passwordInput = document.getElementById('password') as HTMLInputElement;
+
+			// Zero-fill password field on page load / restore
+			window.addEventListener('pageshow', () => {
+				if (passwordInput) passwordInput.value = '';
+			});
 
 			form?.addEventListener('submit', async (e) => {
 				e.preventDefault();
@@ -60,7 +71,6 @@ if (isAuthenticated) {
 				submitBtn.disabled = true;
 				submitBtn.innerText = 'Authenticating...';
 
-				const passwordInput = document.getElementById('password') as HTMLInputElement;
 				const password = passwordInput.value;
 
 				try {
@@ -70,15 +80,20 @@ if (isAuthenticated) {
 						body: JSON.stringify({ password }),
 					});
 
+					// Instantly wipe password string in RAM / DOM
+					passwordInput.value = '';
+
 					const data = await res.json();
 
 					if (res.ok && data.success) {
-						window.location.href = '/admin/dashboard';
+						// Replace location in history so login form with cached state is not in back stack
+						window.location.replace('/admin/dashboard');
 					} else {
 						errorMsg.innerText = data.error || 'Authentication failed';
 						errorMsg.style.display = 'block';
 					}
 				} catch (err: any) {
+					passwordInput.value = '';
 					errorMsg.innerText = 'Network connection error';
 					errorMsg.style.display = 'block';
 				} finally {
