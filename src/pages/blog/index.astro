@@ -1,12 +1,51 @@
 ---
+export const prerender = false;
+
 import BaseHead from '../../components/BaseHead.astro';
 import Header from '../../components/Header.astro';
 import Footer from '../../components/Footer.astro';
 import { getCollection } from 'astro:content';
+import { INITIAL_POSTS, type BlogPostItem } from '../../lib/posts';
 
-const posts = (await getCollection('blog')).sort(
-	(a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
-);
+let posts: BlogPostItem[] = [];
+
+// 1. Attempt dynamic query from Cloudflare D1 Database
+try {
+	const runtime = (Astro.locals as any)?.runtime;
+	const db = runtime?.env?.DB;
+
+	if (db) {
+		const { results } = await db.prepare("SELECT * FROM posts ORDER BY created_at DESC").all();
+		if (results && results.length > 0) {
+			posts = results as BlogPostItem[];
+		}
+	}
+} catch (d1Err) {
+	console.warn("D1 query fallback on blog index:", d1Err);
+}
+
+// 2. Fallback to Content Collection + Initial Posts if D1 yields no results
+if (posts.length === 0) {
+	try {
+		const staticCollection = await getCollection('blog');
+		if (staticCollection && staticCollection.length > 0) {
+			posts = staticCollection.map((p) => ({
+				id: p.id,
+				slug: p.id,
+				title: p.data.title,
+				description: p.data.description,
+				pubDate: p.data.pubDate.toISOString().split('T')[0],
+				author: p.data.author,
+				category: p.data.category,
+				content: p.body || '',
+			}));
+		}
+	} catch (e) {}
+}
+
+if (posts.length === 0) {
+	posts = INITIAL_POSTS;
+}
 ---
 
 <!doctype html>
@@ -32,20 +71,16 @@ const posts = (await getCollection('blog')).sort(
 				<div class="container">
 					<div class="posts-grid">
 						{posts.map((post) => (
-							<a href={`/blog/${post.id}`} class="post-card">
+							<a href={`/blog/${post.slug}`} class="post-card">
 								<div class="card-meta">
-									<span class="pastel-tag tag-blue">{post.data.category}</span>
-									<time datetime={post.data.pubDate.toISOString()} class="mono-date">
-										{post.data.pubDate.toLocaleDateString('en-us', {
-											year: 'numeric',
-											month: 'short',
-											day: 'numeric',
-										})}
+									<span class="pastel-tag tag-blue">{post.category || 'Release Announcement'}</span>
+									<time datetime={post.pubDate} class="mono-date">
+										{post.pubDate}
 									</time>
 								</div>
-								<h2 class="post-title">{post.data.title}</h2>
-								<p class="post-desc">{post.data.description}</p>
-								<div class="post-author">{post.data.author}</div>
+								<h2 class="post-title">{post.title}</h2>
+								<p class="post-desc">{post.description}</p>
+								<div class="post-author">{post.author || 'Mukesh (@mukeshv-tech)'}</div>
 							</a>
 						))}
 					</div>
