@@ -1,0 +1,247 @@
+---
+export const prerender = false;
+
+import BaseHead from '../../components/BaseHead.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import { verifyAdminSession, DEFAULT_ADMIN_PASSWORD } from '../../lib/auth';
+
+const envPassword = process.env.ADMIN_PASSWORD || DEFAULT_ADMIN_PASSWORD;
+const isAuthenticated = await verifyAdminSession(Astro.request, envPassword);
+
+if (!isAuthenticated) {
+	return Astro.redirect('/admin/login');
+}
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title="Admin Dashboard — Aegis CMS" description="Manage blog posts and release notes for Aegis." />
+	</head>
+	<body>
+		<Header />
+
+		<main class="dashboard-main">
+			<div class="container">
+				<!-- TOP HEADER BAR -->
+				<div class="dash-top">
+					<div>
+						<div class="mono-tag">Authenticated Session</div>
+						<h1 class="editorial-title dash-heading">Blog CMS Dashboard</h1>
+					</div>
+					<button id="logout-btn" class="btn btn-secondary">Logout</button>
+				</div>
+
+				<!-- CREATE POST FORM -->
+				<div class="bento-card dash-card">
+					<div class="card-meta">
+						<span class="pastel-tag tag-blue">NEW ARTICLE EDITOR</span>
+					</div>
+
+					<form id="post-form" class="post-form">
+						<div class="form-grid">
+							<div class="form-group">
+								<label for="title" class="mono-tag">Article Title</label>
+								<input type="text" id="title" required placeholder="e.g. Announcing Aegis v1.1.0 Feature Suite" class="form-input" />
+							</div>
+
+							<div class="form-group">
+								<label for="slug" class="mono-tag">URL Slug</label>
+								<input type="text" id="slug" required placeholder="v1-1-0-update" class="form-input" />
+							</div>
+						</div>
+
+						<div class="form-grid">
+							<div class="form-group">
+								<label for="category" class="mono-tag">Category</label>
+								<input type="text" id="category" value="Release Announcement" class="form-input" />
+							</div>
+
+							<div class="form-group">
+								<label for="author" class="mono-tag">Author</label>
+								<input type="text" id="author" value="Mukesh (@mukeshv-tech)" class="form-input" />
+							</div>
+						</div>
+
+						<div class="form-group">
+							<label for="description" class="mono-tag">Short Summary / Description</label>
+							<input type="text" id="description" required placeholder="Short 1-2 sentence preview for article cards." class="form-input" />
+						</div>
+
+						<div class="form-group">
+							<label for="content" class="mono-tag">Markdown Article Content</label>
+							<textarea id="content" required rows="12" placeholder="Write article content in Markdown format..." class="form-textarea"></textarea>
+						</div>
+
+						<div id="status-msg" class="status-msg" style="display: none;"></div>
+
+						<button type="submit" id="publish-btn" class="btn btn-primary btn-lg">
+							Publish Article &rarr;
+						</button>
+					</form>
+				</div>
+			</div>
+		</main>
+
+		<Footer />
+
+		<script>
+			// Auto slug generator from title
+			const titleInput = document.getElementById('title') as HTMLInputElement;
+			const slugInput = document.getElementById('slug') as HTMLInputElement;
+
+			titleInput?.addEventListener('input', () => {
+				if (!slugInput.dataset.manual) {
+					slugInput.value = titleInput.value
+						.toLowerCase()
+						.trim()
+						.replace(/[^a-z0-9 -]/g, '')
+						.replace(/\s+/g, '-');
+				}
+			});
+
+			slugInput?.addEventListener('input', () => {
+				slugInput.dataset.manual = 'true';
+			});
+
+			// Form submission
+			const form = document.getElementById('post-form') as HTMLFormElement;
+			const statusMsg = document.getElementById('status-msg') as HTMLDivElement;
+			const publishBtn = document.getElementById('publish-btn') as HTMLButtonElement;
+
+			form?.addEventListener('submit', async (e) => {
+				e.preventDefault();
+				statusMsg.style.display = 'none';
+				publishBtn.disabled = true;
+				publishBtn.innerText = 'Publishing Article...';
+
+				const postData = {
+					title: (document.getElementById('title') as HTMLInputElement).value,
+					slug: (document.getElementById('slug') as HTMLInputElement).value,
+					category: (document.getElementById('category') as HTMLInputElement).value,
+					author: (document.getElementById('author') as HTMLInputElement).value,
+					description: (document.getElementById('description') as HTMLInputElement).value,
+					content: (document.getElementById('content') as HTMLTextAreaElement).value,
+				};
+
+				try {
+					const res = await fetch('/api/posts', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify(postData),
+					});
+
+					const data = await res.json();
+
+					if (res.ok && data.success) {
+						statusMsg.className = 'status-msg status-success';
+						statusMsg.innerText = `Published successfully! Redirecting...`;
+						statusMsg.style.display = 'block';
+						setTimeout(() => {
+							window.location.href = '/blog';
+						}, 1200);
+					} else {
+						statusMsg.className = 'status-msg status-error';
+						statusMsg.innerText = data.error || 'Failed to publish post';
+						statusMsg.style.display = 'block';
+					}
+				} catch (err: any) {
+					statusMsg.className = 'status-msg status-error';
+					statusMsg.innerText = 'Network connection error';
+					statusMsg.style.display = 'block';
+				} finally {
+					publishBtn.disabled = false;
+					publishBtn.innerText = 'Publish Article →';
+				}
+			});
+
+			// Logout
+			const logoutBtn = document.getElementById('logout-btn') as HTMLButtonElement;
+			logoutBtn?.addEventListener('click', async () => {
+				await fetch('/api/auth/logout', { method: 'POST' });
+				window.location.href = '/admin/login';
+			});
+		</script>
+	</body>
+</html>
+
+<style>
+	.dashboard-main {
+		padding: 4rem 0 6rem 0;
+		min-height: 80vh;
+	}
+	.dash-top {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		margin-bottom: 2.5rem;
+		border-bottom: 1px solid var(--border-light);
+		padding-bottom: 2rem;
+	}
+	.dash-heading {
+		font-size: 2.5rem;
+		margin-top: 0.5rem;
+	}
+	.dash-card {
+		padding: 3rem 2.5rem;
+	}
+	.post-form {
+		display: flex;
+		flex-direction: column;
+		gap: 1.5rem;
+		margin-top: 1.5rem;
+	}
+	.form-grid {
+		display: grid;
+		grid-template-columns: 1fr 1fr;
+		gap: 1.5rem;
+	}
+	.form-group {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+	}
+	.form-input, .form-textarea {
+		background: var(--bg-card);
+		border: 1px solid var(--border-light);
+		border-radius: 6px;
+		padding: 0.875rem 1rem;
+		font-family: var(--font-sans);
+		font-size: 0.95rem;
+		color: var(--text-main);
+		outline: none;
+		transition: border-color 0.2s ease;
+	}
+	.form-textarea {
+		font-family: var(--font-mono);
+		font-size: 0.875rem;
+		line-height: 1.6;
+		resize: vertical;
+	}
+	.form-input:focus, .form-textarea:focus {
+		border-color: var(--border-strong);
+	}
+	.status-msg {
+		font-family: var(--font-mono);
+		font-size: 0.8125rem;
+		padding: 0.75rem 1rem;
+		border-radius: 6px;
+	}
+	.status-success {
+		color: var(--pastel-green-text);
+		background: var(--pastel-green-bg);
+		border: 1px solid rgba(52, 211, 153, 0.2);
+	}
+	.status-error {
+		color: #f87171;
+		background: rgba(248, 113, 113, 0.1);
+		border: 1px solid rgba(248, 113, 113, 0.2);
+	}
+
+	@media (max-width: 768px) {
+		.form-grid {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

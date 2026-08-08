@@ -1,0 +1,153 @@
+---
+export const prerender = false;
+
+import BaseHead from '../../components/BaseHead.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import { verifyAdminSession, DEFAULT_ADMIN_PASSWORD } from '../../lib/auth';
+
+const envPassword = process.env.ADMIN_PASSWORD || DEFAULT_ADMIN_PASSWORD;
+const isAuthenticated = await verifyAdminSession(Astro.request, envPassword);
+
+if (isAuthenticated) {
+	return Astro.redirect('/admin/dashboard');
+}
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title="Admin Login — Aegis CMS" description="Owner Authentication System for Aegis Workstation CMS." />
+	</head>
+	<body>
+		<Header />
+
+		<main class="login-main">
+			<div class="container login-container">
+				<div class="bento-card login-card">
+					<div class="card-meta">
+						<span class="pastel-tag tag-purple">CMS AUTHENTICATION</span>
+					</div>
+					<h1 class="editorial-title login-title">Aegis Admin Portal</h1>
+					<p class="login-desc">Enter your master admin key to manage blog posts and product updates.</p>
+
+					<form id="login-form" class="login-form">
+						<div class="form-group">
+							<label for="password" class="mono-tag">Master Admin Password</label>
+							<input type="password" id="password" name="password" required placeholder="••••••••••••" class="form-input" />
+						</div>
+
+						<div id="error-msg" class="error-msg" style="display: none;"></div>
+
+						<button type="submit" id="submit-btn" class="btn btn-primary btn-full">
+							Authenticate &rarr;
+						</button>
+					</form>
+				</div>
+			</div>
+		</main>
+
+		<Footer />
+
+		<script>
+			const form = document.getElementById('login-form') as HTMLFormElement;
+			const errorMsg = document.getElementById('error-msg') as HTMLDivElement;
+			const submitBtn = document.getElementById('submit-btn') as HTMLButtonElement;
+
+			form?.addEventListener('submit', async (e) => {
+				e.preventDefault();
+				errorMsg.style.display = 'none';
+				submitBtn.disabled = true;
+				submitBtn.innerText = 'Authenticating...';
+
+				const passwordInput = document.getElementById('password') as HTMLInputElement;
+				const password = passwordInput.value;
+
+				try {
+					const res = await fetch('/api/auth/login', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({ password }),
+					});
+
+					const data = await res.json();
+
+					if (res.ok && data.success) {
+						window.location.href = '/admin/dashboard';
+					} else {
+						errorMsg.innerText = data.error || 'Authentication failed';
+						errorMsg.style.display = 'block';
+					}
+				} catch (err: any) {
+					errorMsg.innerText = 'Network connection error';
+					errorMsg.style.display = 'block';
+				} finally {
+					submitBtn.disabled = false;
+					submitBtn.innerText = 'Authenticate →';
+				}
+			});
+		</script>
+	</body>
+</html>
+
+<style>
+	.login-main {
+		padding: 6rem 0;
+		min-height: 75vh;
+		display: flex;
+		align-items: center;
+	}
+	.login-container {
+		max-width: 480px;
+	}
+	.login-card {
+		padding: 3rem 2.5rem;
+	}
+	.login-title {
+		font-size: 2.25rem;
+		margin: 0.75rem 0 0.5rem 0;
+	}
+	.login-desc {
+		font-size: 0.875rem;
+		color: var(--text-muted);
+		margin-bottom: 2rem;
+	}
+	.login-form {
+		display: flex;
+		flex-direction: column;
+		gap: 1.5rem;
+	}
+	.form-group {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+	}
+	.form-input {
+		background: var(--bg-card);
+		border: 1px solid var(--border-light);
+		border-radius: 6px;
+		padding: 0.875rem 1rem;
+		font-family: var(--font-mono);
+		font-size: 0.95rem;
+		color: var(--text-main);
+		outline: none;
+		transition: border-color 0.2s ease;
+	}
+	.form-input:focus {
+		border-color: var(--border-strong);
+	}
+	.btn-full {
+		width: 100%;
+		padding: 0.875rem;
+		font-size: 0.95rem;
+	}
+	.error-msg {
+		font-family: var(--font-mono);
+		font-size: 0.8125rem;
+		color: #f87171;
+		background: rgba(248, 113, 113, 0.1);
+		border: 1px solid rgba(248, 113, 113, 0.2);
+		padding: 0.75rem 1rem;
+		border-radius: 6px;
+	}
+</style>
