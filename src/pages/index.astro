@@ -17,7 +17,10 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 			<!-- HERO SECTION -->
 			<section class="hero-section">
 				<div class="container">
-					<div class="mono-tag hero-meta">Zero-Trust Environment Workstation</div>
+					<a href="/blog/v1-0-0-release" class="hero-banner">
+						<span class="pastel-tag tag-blue">RELEASE</span>
+						<span class="banner-text">Announcing Aegis v1.0.0 GA &rarr;</span>
+					</a>
 					
 					<h1 class="editorial-title hero-heading">
 						Command remote infrastructure with <em>zero-trust precision.</em>
@@ -150,6 +153,28 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 							</p>
 						</div>
 					</div>
+				</div>
+			</section>
+
+			<!-- FEATURED RELEASE ARTICLE -->
+			<section id="blog-highlight">
+				<div class="container">
+					<div class="section-header">
+						<div class="mono-tag">Latest Article</div>
+						<h2 class="section-heading">Release Notes &amp; Updates</h2>
+					</div>
+
+					<a href="/blog/v1-0-0-release" class="bento-card blog-highlight-card">
+						<div class="card-meta">
+							<span class="pastel-tag tag-blue">RELEASE ANNOUNCEMENT</span>
+							<span class="mono-tag">AUGUST 8, 2026</span>
+						</div>
+						<h3>Announcing Aegis v1.0.0: Zero-Trust Remote Environment Workstation</h3>
+						<p>
+							Read our full release post covering WebGL terminal rendering, Zmodem inline file transfers, Scrypt vault encryption, parallel multi-server automation, live system vitals telemetry, and installer downloads.
+						</p>
+						<div class="read-more">Read Full Article &rarr;</div>
+					</a>
 				</div>
 			</section>
 
@@ -363,5 +388,51 @@ import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
 		gap: 1rem;
 		justify-content: center;
 		flex-wrap: wrap;
+	}
+
+	/* Hero Announcement Banner */
+	.hero-banner {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.75rem;
+		background: var(--bg-surface);
+		border: 1px solid var(--border-light);
+		border-radius: 9999px;
+		padding: 0.35rem 1rem 0.35rem 0.5rem;
+		margin-bottom: 1.5rem;
+		transition: border-color 0.2s ease;
+	}
+	.hero-banner:hover {
+		border-color: var(--border-strong);
+	}
+	.banner-text {
+		font-family: var(--font-mono);
+		font-size: 0.8125rem;
+		color: var(--text-main);
+	}
+
+	/* Featured Blog Card */
+	.blog-highlight-card {
+		display: flex;
+		flex-direction: column;
+		gap: 1rem;
+		text-decoration: none;
+	}
+	.blog-highlight-card h3 {
+		font-size: 1.5rem;
+		font-weight: 700;
+		color: var(--text-main);
+	}
+	.blog-highlight-card p {
+		font-size: 1rem;
+		color: var(--text-muted);
+		line-height: 1.6;
+	}
+	.read-more {
+		font-family: var(--font-mono);
+		font-size: 0.875rem;
+		font-weight: 700;
+		color: var(--pastel-blue-text);
+		margin-top: 0.5rem;
 	}
 </style>
