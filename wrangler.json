@@ -1,5 +1,5 @@
 {
-	"name": "astro-blog-starter-template-1",
+	"name": "aegis-website",
 	"compatibility_date": "2025-10-08",
 	"compatibility_flags": ["nodejs_compat"],
 	"main": "./dist/_worker.js/index.js",
@@ -7,6 +7,13 @@
 		"directory": "./dist",
 		"binding": "ASSETS"
 	},
+	"d1_databases": [
+		{
+			"binding": "DB",
+			"database_name": "aegis_db",
+			"database_id": "aegis_db"
+		}
+	],
 	"observability": {
 		"enabled": true
 	},
