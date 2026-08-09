@@ -6,6 +6,15 @@ import { INITIAL_POSTS } from "../../../lib/posts";
 import fs from "fs";
 import path from "path";
 
+// Helper function to auto-heal missing is_deleted column in Cloudflare D1
+async function ensureColumnExists(db: any) {
+  try {
+    await db.prepare("ALTER TABLE posts ADD COLUMN is_deleted INTEGER DEFAULT 0").run();
+  } catch (e) {
+    // Column already exists or table not yet created
+  }
+}
+
 export const GET: APIRoute = async ({ request, locals }) => {
   const envPassword = process.env.ADMIN_PASSWORD || DEFAULT_ADMIN_PASSWORD;
   const isAdmin = await verifyAdminSession(request, envPassword);
@@ -15,17 +24,33 @@ export const GET: APIRoute = async ({ request, locals }) => {
     const db = runtime?.env?.DB;
 
     if (db) {
-      // If admin, retrieve all posts (including soft-deleted). Otherwise, retrieve only active posts.
-      const query = isAdmin
-        ? "SELECT * FROM posts ORDER BY created_at DESC"
-        : "SELECT * FROM posts WHERE is_deleted = 0 OR is_deleted IS NULL ORDER BY created_at DESC";
+      try {
+        const query = isAdmin
+          ? "SELECT * FROM posts ORDER BY created_at DESC"
+          : "SELECT * FROM posts WHERE is_deleted = 0 OR is_deleted IS NULL ORDER BY created_at DESC";
 
-      const { results } = await db.prepare(query).all();
-      if (results && results.length > 0) {
-        return new Response(JSON.stringify(results), {
-          status: 200,
-          headers: { "Content-Type": "application/json" },
-        });
+        const { results } = await db.prepare(query).all();
+        if (results && results.length > 0) {
+          return new Response(JSON.stringify(results), {
+            status: 200,
+            headers: { "Content-Type": "application/json" },
+          });
+        }
+      } catch (err: any) {
+        // Auto-heal missing is_deleted column error
+        if (err?.message?.includes("no such column: is_deleted") || String(err).includes("is_deleted")) {
+          await ensureColumnExists(db);
+          const fallbackQuery = isAdmin
+            ? "SELECT * FROM posts ORDER BY created_at DESC"
+            : "SELECT * FROM posts WHERE is_deleted = 0 OR is_deleted IS NULL ORDER BY created_at DESC";
+          const { results } = await db.prepare(fallbackQuery).all();
+          if (results && results.length > 0) {
+            return new Response(JSON.stringify(results), {
+              status: 200,
+              headers: { "Content-Type": "application/json" },
+            });
+          }
+        }
       }
     }
   } catch (d1Err) {
@@ -59,6 +84,10 @@ export const POST: APIRoute = async ({ request, locals }) => {
 
     const runtime = (locals as any)?.runtime;
     const db = runtime?.env?.DB;
+
+    if (db) {
+      await ensureColumnExists(db);
+    }
 
     // --- 1. RESTORE ACTION ---
     if (action === "restore" && slug) {
