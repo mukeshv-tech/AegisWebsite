@@ -1,0 +1,353 @@
+---
+export const prerender = false;
+
+import BaseHead from '../components/BaseHead.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+
+const razorpayKeyId = process.env.PUBLIC_RAZORPAY_KEY_ID || process.env.RAZORPAY_KEY_ID || 'rzp_test_TNbJmoow265Zb0';
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title="Support Aegis — Razorpay Checkout" description="Support open-source development for Aegis Zero-Trust Remote Environment Workstation." />
+	</head>
+	<body>
+		<Header />
+
+		<main class="support-main">
+			<div class="container support-container">
+				<div class="mono-tag">Support Open Source</div>
+				<h1 class="editorial-title support-heading">Sponsor <em>Aegis Workstation</em></h1>
+				<p class="support-desc">
+					Aegis is 100% open-source software built for DevOps leads and SREs. Your contribution helps fund continuous integration pipelines, security audits, and feature development.
+				</p>
+
+				<div class="bento-grid support-grid">
+					<!-- Preset 1: ₹500 -->
+					<div class="bento-card support-card">
+						<div class="card-meta">
+							<span class="pastel-tag tag-blue">SUPPORTER tier</span>
+						</div>
+						<h3>Community Tier</h3>
+						<div class="price-val">₹500 <span>INR</span></div>
+						<p>Fund CI runners and automated integration testing matrix.</p>
+						<button class="btn btn-primary pay-btn" data-amount="50000" data-tier="Community Supporter">
+							Sponsor ₹500 &rarr;
+						</button>
+					</div>
+
+					<!-- Preset 2: ₹1,500 -->
+					<div class="bento-card support-card featured-card">
+						<div class="card-meta">
+							<span class="pastel-tag tag-purple">RECOMMENDED</span>
+						</div>
+						<h3>Pro Engineer Tier</h3>
+						<div class="price-val">₹1,500 <span>INR</span></div>
+						<p>Accelerate WebGL terminal performance &amp; Zmodem feature releases.</p>
+						<button class="btn btn-primary pay-btn" data-amount="150000" data-tier="Pro Engineer">
+							Sponsor ₹1,500 &rarr;
+						</button>
+					</div>
+
+					<!-- Preset 3: ₹5,000 -->
+					<div class="bento-card support-card">
+						<div class="card-meta">
+							<span class="pastel-tag tag-green">ENTERPRISE tier</span>
+						</div>
+						<h3>Infrastructure Tier</h3>
+						<div class="price-val">₹5,000 <span>INR</span></div>
+						<p>Fund security audits and zero-knowledge vault cryptographic hardening.</p>
+						<button class="btn btn-primary pay-btn" data-amount="500000" data-tier="Infrastructure Sponsor">
+							Sponsor ₹5,000 &rarr;
+						</button>
+					</div>
+				</div>
+
+				<!-- Custom Amount Input Box -->
+				<div class="bento-card custom-card">
+					<div class="card-meta">
+						<span class="pastel-tag tag-amber">CUSTOM SPONSORSHIP</span>
+					</div>
+					<h3>Choose Custom Amount</h3>
+					<div class="custom-form">
+						<div class="input-wrapper">
+							<span class="currency-prefix">₹</span>
+							<input type="number" id="custom-amount" min="10" value="100" step="10" placeholder="100" class="custom-input" />
+						</div>
+						<button id="custom-pay-btn" class="btn btn-secondary">
+							Pay Custom Amount &rarr;
+						</button>
+					</div>
+				</div>
+
+				<!-- Status & Error Alert Container -->
+				<div id="payment-status" class="payment-status-box" style="display: none;"></div>
+			</div>
+		</main>
+
+		<Footer />
+
+		<!-- Client Script for Razorpay Checkout Integration -->
+		<script is:inline define:vars={{ razorpayKeyId }}>
+			declare var Razorpay: any;
+
+			const statusBox = document.getElementById('payment-status');
+
+			function showStatus(message, isError = false) {
+				if (!statusBox) return;
+				statusBox.style.display = 'block';
+				statusBox.className = isError ? 'payment-status-box status-error' : 'payment-status-box status-success';
+				statusBox.innerHTML = message;
+			}
+
+			async function initiateCheckout(amountInPaise, description) {
+				if (!statusBox) return;
+				statusBox.style.display = 'none';
+
+				try {
+					showStatus('Creating secure Razorpay order...', false);
+
+					// STEP 1: Call Backend to Create Order
+					const orderRes = await fetch('/api/create-order', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							amount: amountInPaise,
+							currency: 'INR',
+							receipt: 'rcpt_' + Date.now(),
+						}),
+					});
+
+					const orderData = await orderRes.json();
+
+					if (!orderRes.ok || !orderData.success) {
+						showStatus('Error creating order: ' + (orderData.error || 'Server error'), true);
+						return;
+					}
+
+					showStatus('Opening Razorpay Payment Modal...', false);
+
+					// STEP 2: Open Razorpay Standard Checkout Modal
+					const options = {
+						key: orderData.key_id || razorpayKeyId,
+						amount: orderData.amount,
+						currency: orderData.currency,
+						name: 'Aegis Workstation',
+						description: description || 'Open Source Sponsorship',
+						image: '/favicon.svg',
+						order_id: orderData.order_id,
+						handler: async function (response) {
+							// STEP 3: Receive payment credentials and verify signature
+							showStatus('Verifying payment signature with backend...', false);
+
+							try {
+								const verifyRes = await fetch('/api/verify-payment', {
+									method: 'POST',
+									headers: { 'Content-Type': 'application/json' },
+									body: JSON.stringify({
+										razorpay_order_id: response.razorpay_order_id,
+										razorpay_payment_id: response.razorpay_payment_id,
+										razorpay_signature: response.razorpay_signature,
+									}),
+								});
+
+								const verifyData = await verifyRes.json();
+
+								if (verifyRes.ok && verifyData.success) {
+									showStatus(
+										'✅ <strong>Payment Successful!</strong><br />Payment ID: <code>' +
+										response.razorpay_payment_id +
+										'</code><br />Thank you for supporting Aegis Workstation.',
+										false
+									);
+								} else {
+									showStatus(
+										'❌ <strong>Payment Verification Failed!</strong><br />' +
+										(verifyData.error || 'Invalid payment signature.'),
+										true
+									);
+								}
+							} catch (err) {
+								showStatus('Error connecting to verification server.', true);
+							}
+						},
+						modal: {
+							ondismiss: function () {
+								showStatus('Payment cancelled by user.', true);
+							},
+						},
+						theme: {
+							color: '#090b0e',
+						},
+					};
+
+					const rzp = new Razorpay(options);
+
+					rzp.on('payment.failed', function (response) {
+						showStatus(
+							'❌ <strong>Payment Failed!</strong><br />Reason: ' +
+							(response.error.description || response.error.reason),
+							true
+						);
+					});
+
+					rzp.open();
+				} catch (err) {
+					showStatus('Network error while initiating payment.', true);
+				}
+			}
+
+			// Preset buttons
+			document.querySelectorAll('.pay-btn').forEach((btn) => {
+				btn.addEventListener('click', () => {
+					const amount = parseInt(btn.getAttribute('data-amount') || '10000', 10);
+					const tier = btn.getAttribute('data-tier') || 'Sponsorship';
+					initiateCheckout(amount, 'Aegis Sponsorship - ' + tier);
+				});
+			});
+
+			// Custom amount button
+			const customPayBtn = document.getElementById('custom-pay-btn');
+			const customInput = document.getElementById('custom-amount');
+
+			customPayBtn?.addEventListener('click', () => {
+				const val = parseFloat(customInput.value || '100');
+				if (isNaN(val) || val < 1) {
+					showStatus('Please enter a valid amount (minimum ₹1.00).', true);
+					return;
+				}
+				const amountInPaise = Math.round(val * 100);
+				initiateCheckout(amountInPaise, 'Custom Aegis Sponsorship');
+			});
+		</script>
+	</body>
+</html>
+
+<style>
+	.support-main {
+		padding: 5rem 0 7rem 0;
+		min-height: 80vh;
+	}
+	.support-container {
+		max-width: 960px;
+	}
+	.support-heading {
+		font-size: 3.25rem;
+		margin-top: 0.5rem;
+	}
+	.support-desc {
+		font-size: 1.15rem;
+		color: var(--text-muted);
+		max-width: 680px;
+		margin-top: 1rem;
+		margin-bottom: 3rem;
+		line-height: 1.7;
+	}
+
+	.support-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+		gap: 1.5rem;
+		margin-bottom: 2.5rem;
+	}
+	.support-card {
+		display: flex;
+		flex-direction: column;
+		padding: 2.25rem 2rem;
+	}
+	.featured-card {
+		border-color: var(--border-strong);
+		background: var(--bg-card);
+	}
+	.support-card h3 {
+		font-size: 1.25rem;
+		font-weight: 700;
+		margin-bottom: 0.5rem;
+		color: var(--text-main);
+	}
+	.price-val {
+		font-family: var(--font-mono);
+		font-size: 2.5rem;
+		font-weight: 800;
+		color: var(--text-main);
+		margin: 0.5rem 0 1rem 0;
+	}
+	.price-val span {
+		font-size: 1rem;
+		font-weight: 400;
+		color: var(--text-dim);
+	}
+	.support-card p {
+		font-size: 0.875rem;
+		color: var(--text-muted);
+		line-height: 1.6;
+		margin-bottom: 2rem;
+	}
+	.support-card .btn {
+		margin-top: auto;
+		width: 100%;
+	}
+
+	/* Custom Card */
+	.custom-card {
+		padding: 2.25rem 2rem;
+	}
+	.custom-card h3 {
+		font-size: 1.25rem;
+		font-weight: 700;
+		margin-bottom: 1.25rem;
+	}
+	.custom-form {
+		display: flex;
+		gap: 1rem;
+		flex-wrap: wrap;
+	}
+	.input-wrapper {
+		display: flex;
+		align-items: center;
+		background: var(--bg-primary);
+		border: 1px solid var(--border-light);
+		border-radius: 6px;
+		padding: 0 1rem;
+		flex: 1;
+		min-width: 200px;
+	}
+	.currency-prefix {
+		font-family: var(--font-mono);
+		font-size: 1.1rem;
+		color: var(--text-muted);
+		margin-right: 0.5rem;
+	}
+	.custom-input {
+		background: transparent;
+		border: none;
+		outline: none;
+		color: var(--text-main);
+		font-family: var(--font-mono);
+		font-size: 1.1rem;
+		width: 100%;
+		padding: 0.75rem 0;
+	}
+
+	/* Payment Status Alert Box */
+	.payment-status-box {
+		margin-top: 2.5rem;
+		padding: 1.25rem 1.75rem;
+		border-radius: 8px;
+		font-family: var(--font-mono);
+		font-size: 0.9rem;
+		line-height: 1.7;
+	}
+	.status-success {
+		background: var(--pastel-green-bg);
+		border: 1px solid rgba(52, 211, 153, 0.3);
+		color: var(--pastel-green-text);
+	}
+	.status-error {
+		background: rgba(248, 113, 113, 0.1);
+		border: 1px solid rgba(248, 113, 113, 0.3);
+		color: #f87171;
+	}
+</style>
