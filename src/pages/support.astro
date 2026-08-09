@@ -5,13 +5,14 @@ import BaseHead from '../components/BaseHead.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 
-const razorpayKeyId = process.env.PUBLIC_RAZORPAY_KEY_ID || process.env.RAZORPAY_KEY_ID || 'rzp_test_TNbJmoow265Zb0';
+const keyId = process.env.PUBLIC_RAZORPAY_KEY_ID || process.env.RAZORPAY_KEY_ID || 'rzp_test_TNbJmoow265Zb0';
 ---
 
 <!doctype html>
 <html lang="en">
 	<head>
 		<BaseHead title="Support Aegis — Razorpay Checkout" description="Support open-source development for Aegis Zero-Trust Remote Environment Workstation." />
+		<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 	</head>
 	<body>
 		<Header />
@@ -33,7 +34,7 @@ const razorpayKeyId = process.env.PUBLIC_RAZORPAY_KEY_ID || process.env.RAZORPAY
 						<h3>Community Tier</h3>
 						<div class="price-val">₹500 <span>INR</span></div>
 						<p>Fund CI runners and automated integration testing matrix.</p>
-						<button class="btn btn-primary pay-btn" data-amount="50000" data-tier="Community Supporter">
+						<button type="button" class="btn btn-primary pay-btn" data-amount="50000" data-tier="Community Supporter">
 							Sponsor ₹500 &rarr;
 						</button>
 					</div>
@@ -46,7 +47,7 @@ const razorpayKeyId = process.env.PUBLIC_RAZORPAY_KEY_ID || process.env.RAZORPAY
 						<h3>Pro Engineer Tier</h3>
 						<div class="price-val">₹1,500 <span>INR</span></div>
 						<p>Accelerate WebGL terminal performance &amp; Zmodem feature releases.</p>
-						<button class="btn btn-primary pay-btn" data-amount="150000" data-tier="Pro Engineer">
+						<button type="button" class="btn btn-primary pay-btn" data-amount="150000" data-tier="Pro Engineer">
 							Sponsor ₹1,500 &rarr;
 						</button>
 					</div>
@@ -59,7 +60,7 @@ const razorpayKeyId = process.env.PUBLIC_RAZORPAY_KEY_ID || process.env.RAZORPAY
 						<h3>Infrastructure Tier</h3>
 						<div class="price-val">₹5,000 <span>INR</span></div>
 						<p>Fund security audits and zero-knowledge vault cryptographic hardening.</p>
-						<button class="btn btn-primary pay-btn" data-amount="500000" data-tier="Infrastructure Sponsor">
+						<button type="button" class="btn btn-primary pay-btn" data-amount="500000" data-tier="Infrastructure Sponsor">
 							Sponsor ₹5,000 &rarr;
 						</button>
 					</div>
@@ -76,7 +77,7 @@ const razorpayKeyId = process.env.PUBLIC_RAZORPAY_KEY_ID || process.env.RAZORPAY
 							<span class="currency-prefix">₹</span>
 							<input type="number" id="custom-amount" min="10" value="100" step="10" placeholder="100" class="custom-input" />
 						</div>
-						<button id="custom-pay-btn" class="btn btn-secondary">
+						<button type="button" id="custom-pay-btn" class="btn btn-secondary">
 							Pay Custom Amount &rarr;
 						</button>
 					</div>
@@ -90,12 +91,22 @@ const razorpayKeyId = process.env.PUBLIC_RAZORPAY_KEY_ID || process.env.RAZORPAY
 		<Footer />
 
 		<!-- Client Script for Razorpay Checkout Integration -->
-		<script is:inline define:vars={{ razorpayKeyId }}>
-			declare var Razorpay: any;
+		<script is:inline>
+			const clientRazorpayKey = "rzp_test_TNbJmoow265Zb0";
 
-			const statusBox = document.getElementById('payment-status');
+			function loadRazorpayScript() {
+				return new Promise((resolve) => {
+					if (window.Razorpay) return resolve(true);
+					const script = document.createElement('script');
+					script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+					script.onload = () => resolve(true);
+					script.onerror = () => resolve(false);
+					document.head.appendChild(script);
+				});
+			}
 
-			function showStatus(message, isError = false) {
+			function showStatus(message, isError) {
+				const statusBox = document.getElementById('payment-status');
 				if (!statusBox) return;
 				statusBox.style.display = 'block';
 				statusBox.className = isError ? 'payment-status-box status-error' : 'payment-status-box status-success';
@@ -103,13 +114,16 @@ const razorpayKeyId = process.env.PUBLIC_RAZORPAY_KEY_ID || process.env.RAZORPAY
 			}
 
 			async function initiateCheckout(amountInPaise, description) {
-				if (!statusBox) return;
-				statusBox.style.display = 'none';
+				showStatus('Creating secure Razorpay order...', false);
+
+				const loaded = await loadRazorpayScript();
+				if (!loaded) {
+					showStatus('Failed to load Razorpay SDK. Please check your internet connection.', true);
+					return;
+				}
 
 				try {
-					showStatus('Creating secure Razorpay order...', false);
-
-					// STEP 1: Call Backend to Create Order
+					// STEP 1: Call Backend API to create order
 					const orderRes = await fetch('/api/create-order', {
 						method: 'POST',
 						headers: { 'Content-Type': 'application/json' },
@@ -131,7 +145,7 @@ const razorpayKeyId = process.env.PUBLIC_RAZORPAY_KEY_ID || process.env.RAZORPAY
 
 					// STEP 2: Open Razorpay Standard Checkout Modal
 					const options = {
-						key: orderData.key_id || razorpayKeyId,
+						key: orderData.key_id || clientRazorpayKey,
 						amount: orderData.amount,
 						currency: orderData.currency,
 						name: 'Aegis Workstation',
@@ -183,7 +197,7 @@ const razorpayKeyId = process.env.PUBLIC_RAZORPAY_KEY_ID || process.env.RAZORPAY
 						},
 					};
 
-					const rzp = new Razorpay(options);
+					const rzp = new window.Razorpay(options);
 
 					rzp.on('payment.failed', function (response) {
 						showStatus(
@@ -195,32 +209,42 @@ const razorpayKeyId = process.env.PUBLIC_RAZORPAY_KEY_ID || process.env.RAZORPAY
 
 					rzp.open();
 				} catch (err) {
-					showStatus('Network error while initiating payment.', true);
+					showStatus('Network error while initiating payment: ' + err.message, true);
 				}
 			}
 
-			// Preset buttons
-			document.querySelectorAll('.pay-btn').forEach((btn) => {
-				btn.addEventListener('click', () => {
-					const amount = parseInt(btn.getAttribute('data-amount') || '10000', 10);
-					const tier = btn.getAttribute('data-tier') || 'Sponsorship';
-					initiateCheckout(amount, 'Aegis Sponsorship - ' + tier);
+			// Initialize event listeners when DOM is fully loaded
+			function initButtons() {
+				const payButtons = document.querySelectorAll('.pay-btn');
+				payButtons.forEach((btn) => {
+					btn.addEventListener('click', (e) => {
+						e.preventDefault();
+						const amount = parseInt(btn.getAttribute('data-amount') || '10000', 10);
+						const tier = btn.getAttribute('data-tier') || 'Sponsorship';
+						initiateCheckout(amount, 'Aegis Sponsorship - ' + tier);
+					});
 				});
-			});
 
-			// Custom amount button
-			const customPayBtn = document.getElementById('custom-pay-btn');
-			const customInput = document.getElementById('custom-amount');
+				const customPayBtn = document.getElementById('custom-pay-btn');
+				const customInput = document.getElementById('custom-amount');
 
-			customPayBtn?.addEventListener('click', () => {
-				const val = parseFloat(customInput.value || '100');
-				if (isNaN(val) || val < 1) {
-					showStatus('Please enter a valid amount (minimum ₹1.00).', true);
-					return;
-				}
-				const amountInPaise = Math.round(val * 100);
-				initiateCheckout(amountInPaise, 'Custom Aegis Sponsorship');
-			});
+				customPayBtn?.addEventListener('click', (e) => {
+					e.preventDefault();
+					const val = parseFloat(customInput.value || '100');
+					if (isNaN(val) || val < 1) {
+						showStatus('Please enter a valid amount (minimum ₹1.00).', true);
+						return;
+					}
+					const amountInPaise = Math.round(val * 100);
+					initiateCheckout(amountInPaise, 'Custom Aegis Sponsorship');
+				});
+			}
+
+			if (document.readyState === 'loading') {
+				document.addEventListener('DOMContentLoaded', initButtons);
+			} else {
+				initButtons();
+			}
 		</script>
 	</body>
 </html>
@@ -288,6 +312,7 @@ const razorpayKeyId = process.env.PUBLIC_RAZORPAY_KEY_ID || process.env.RAZORPAY
 	.support-card .btn {
 		margin-top: auto;
 		width: 100%;
+		cursor: pointer;
 	}
 
 	/* Custom Card */
