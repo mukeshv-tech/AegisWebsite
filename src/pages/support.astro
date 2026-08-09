@@ -25,6 +25,17 @@ const keyId = process.env.PUBLIC_RAZORPAY_KEY_ID || process.env.RAZORPAY_KEY_ID 
 					Aegis is 100% open-source software built for DevOps leads and SREs. Your contribution helps fund continuous integration pipelines, security audits, and feature development.
 				</p>
 
+				<!-- TEST MODE WARNING BANNER -->
+				<div class="test-mode-banner">
+					<div class="banner-meta">
+						<span class="pastel-tag tag-amber">⚡ SYSTEM NOTICE</span>
+						<span class="mono-tag">ENVIRONMENT: RAZORPAY TEST MODE</span>
+					</div>
+					<p class="banner-text">
+						<strong>Notice:</strong> This checkout system is currently running in <em>Razorpay Test Mode (`rzp_test_...`)</em>. Live production payments are not hooked up yet. No real money will be charged during transactions.
+					</p>
+				</div>
+
 				<div class="bento-grid support-grid">
 					<!-- Preset 1: ₹500 -->
 					<div class="bento-card support-card">
@@ -266,8 +277,29 @@ const keyId = process.env.PUBLIC_RAZORPAY_KEY_ID || process.env.RAZORPAY_KEY_ID 
 		color: var(--text-muted);
 		max-width: 680px;
 		margin-top: 1rem;
-		margin-bottom: 3rem;
+		margin-bottom: 2rem;
 		line-height: 1.7;
+	}
+
+	/* Test Mode Warning Banner */
+	.test-mode-banner {
+		background: rgba(245, 158, 11, 0.08);
+		border: 1px solid rgba(245, 158, 11, 0.3);
+		border-radius: 8px;
+		padding: 1.25rem 1.5rem;
+		margin-bottom: 3rem;
+	}
+	.banner-meta {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		margin-bottom: 0.5rem;
+	}
+	.banner-text {
+		font-size: 0.9rem;
+		color: var(--pastel-amber-text);
+		line-height: 1.6;
+		margin: 0;
 	}
 
 	.support-grid {
