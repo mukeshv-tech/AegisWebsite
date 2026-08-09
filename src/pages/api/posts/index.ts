@@ -6,14 +6,21 @@ import { INITIAL_POSTS } from "../../../lib/posts";
 import fs from "fs";
 import path from "path";
 
-export const GET: APIRoute = async ({ locals }) => {
+export const GET: APIRoute = async ({ request, locals }) => {
+  const envPassword = process.env.ADMIN_PASSWORD || DEFAULT_ADMIN_PASSWORD;
+  const isAdmin = await verifyAdminSession(request, envPassword);
+
   try {
-    // Attempt reading from Cloudflare D1 Database binding
     const runtime = (locals as any)?.runtime;
     const db = runtime?.env?.DB;
 
     if (db) {
-      const { results } = await db.prepare("SELECT * FROM posts ORDER BY created_at DESC").all();
+      // If admin, retrieve all posts (including soft-deleted). Otherwise, retrieve only active posts.
+      const query = isAdmin
+        ? "SELECT * FROM posts ORDER BY created_at DESC"
+        : "SELECT * FROM posts WHERE is_deleted = 0 OR is_deleted IS NULL ORDER BY created_at DESC";
+
+      const { results } = await db.prepare(query).all();
       if (results && results.length > 0) {
         return new Response(JSON.stringify(results), {
           status: 200,
@@ -25,7 +32,11 @@ export const GET: APIRoute = async ({ locals }) => {
     console.warn("D1 Database query fallback to default posts:", d1Err);
   }
 
-  return new Response(JSON.stringify(INITIAL_POSTS), {
+  const filteredInitial = isAdmin
+    ? INITIAL_POSTS
+    : INITIAL_POSTS.filter((p) => !p.is_deleted);
+
+  return new Response(JSON.stringify(filteredInitial), {
     status: 200,
     headers: { "Content-Type": "application/json" },
   });
@@ -44,8 +55,53 @@ export const POST: APIRoute = async ({ request, locals }) => {
 
   try {
     const data = await request.json();
-    const { title, slug, description, category, author, content } = data;
+    const { action, slug, title, description, category, author, content } = data;
 
+    const runtime = (locals as any)?.runtime;
+    const db = runtime?.env?.DB;
+
+    // --- 1. RESTORE ACTION ---
+    if (action === "restore" && slug) {
+      if (db) {
+        await db.prepare("UPDATE posts SET is_deleted = 0 WHERE slug = ? OR id = ?").bind(slug, slug).run();
+      }
+      return new Response(
+        JSON.stringify({ success: true, message: `Article "${slug}" restored successfully!` }),
+        { status: 200, headers: { "Content-Type": "application/json" } }
+      );
+    }
+
+    // --- 2. SOFT DELETE ACTION ---
+    if (action === "delete" && slug) {
+      if (db) {
+        await db.prepare("UPDATE posts SET is_deleted = 1 WHERE slug = ? OR id = ?").bind(slug, slug).run();
+      }
+      return new Response(
+        JSON.stringify({ success: true, message: `Article "${slug}" moved to Trash!` }),
+        { status: 200, headers: { "Content-Type": "application/json" } }
+      );
+    }
+
+    // --- 3. PERMANENT DELETE ACTION ---
+    if (action === "permanent_delete" && slug) {
+      if (db) {
+        await db.prepare("DELETE FROM posts WHERE slug = ? OR id = ?").bind(slug, slug).run();
+      }
+      try {
+        const blogDir = path.join(process.cwd(), "src", "content", "blog");
+        const filePath = path.join(blogDir, `${slug}.md`);
+        if (fs.existsSync(filePath)) {
+          fs.unlinkSync(filePath);
+        }
+      } catch (e) {}
+
+      return new Response(
+        JSON.stringify({ success: true, message: `Article "${slug}" permanently deleted!` }),
+        { status: 200, headers: { "Content-Type": "application/json" } }
+      );
+    }
+
+    // --- 4. PUBLISH NEW ARTICLE ---
     if (!title || !slug || !content) {
       return new Response(JSON.stringify({ error: "Missing required fields (title, slug, content)" }), {
         status: 400,
@@ -58,29 +114,19 @@ export const POST: APIRoute = async ({ request, locals }) => {
     const postAuthor = author || "Mukesh (@mukeshv-tech)";
     const postCategory = category || "Product Update";
 
-    // 1. Save to Cloudflare D1 Database if binding exists
-    let savedToD1 = false;
-    try {
-      const runtime = (locals as any)?.runtime;
-      const db = runtime?.env?.DB;
-
-      if (db) {
-        await db
-          .prepare(
-            `INSERT INTO posts (id, slug, title, description, pub_date, author, category, content) 
-             VALUES (?, ?, ?, ?, ?, ?, ?, ?) 
-             ON CONFLICT(slug) DO UPDATE SET 
-             title=excluded.title, description=excluded.description, content=excluded.content, category=excluded.category`
-          )
-          .bind(cleanSlug, cleanSlug, title, description || "", pubDate, postAuthor, postCategory, content)
-          .run();
-        savedToD1 = true;
-      }
-    } catch (d1Err) {
-      console.warn("Cloudflare D1 insert warning:", d1Err);
+    if (db) {
+      await db
+        .prepare(
+          `INSERT INTO posts (id, slug, title, description, pub_date, author, category, content, is_deleted) 
+           VALUES (?, ?, ?, ?, ?, ?, ?, ?, 0) 
+           ON CONFLICT(slug) DO UPDATE SET 
+           title=excluded.title, description=excluded.description, content=excluded.content, category=excluded.category, is_deleted=0`
+        )
+        .bind(cleanSlug, cleanSlug, title, description || "", pubDate, postAuthor, postCategory, content)
+        .run();
     }
 
-    // 2. Save markdown file locally if filesystem is writable
+    // Write markdown file locally if writable
     const markdownContent = `---
 title: "${title.replace(/"/g, '\\"')}"
 description: "${(description || "").replace(/"/g, '\\"')}"
@@ -98,16 +144,12 @@ ${content}
         fs.mkdirSync(blogDir, { recursive: true });
       }
       fs.writeFileSync(path.join(blogDir, `${cleanSlug}.md`), markdownContent, "utf8");
-    } catch (fsErr) {
-      // Local filesystem read-only in serverless
-    }
+    } catch (fsErr) {}
 
     return new Response(
       JSON.stringify({
         success: true,
-        message: savedToD1
-          ? "Article successfully published to Cloudflare D1 database!"
-          : "Article created successfully!",
+        message: "Article published successfully to D1 database!",
         post: {
           id: cleanSlug,
           slug: cleanSlug,
@@ -117,7 +159,7 @@ ${content}
           author: postAuthor,
           category: postCategory,
           content,
-          d1Saved: savedToD1,
+          is_deleted: 0,
         },
       }),
       {
@@ -126,7 +168,7 @@ ${content}
       }
     );
   } catch (err: any) {
-    return new Response(JSON.stringify({ error: err.message || "Failed to create blog post" }), {
+    return new Response(JSON.stringify({ error: err.message || "Failed to process article request" }), {
       status: 500,
       headers: { "Content-Type": "application/json" },
     });

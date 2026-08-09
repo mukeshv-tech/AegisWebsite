@@ -9,6 +9,7 @@ export interface BlogPostItem {
   author: string;
   category: string;
   content: string;
+  is_deleted?: number;
 }
 
 // Default initial blog post seeded into Cloudflare D1 Database & API
@@ -21,6 +22,7 @@ export const INITIAL_POSTS: BlogPostItem[] = [
     pubDate: "2026-08-08",
     author: "Mukesh (@mukeshv-tech)",
     category: "Release Announcement",
+    is_deleted: 0,
     content: `We are excited to announce the general availability of **Aegis v1.0.0**, a desktop workstation engineered for DevOps leads, SREs, and security engineers managing multi-cloud remote environments.
 
 Remote infrastructure management has historically forced engineers to compromise between speed, visibility, and cryptographic security. Aegis eliminates these tradeoffs by uniting high-performance terminal emulation, zero-knowledge credential vaulting, and multi-server batch execution into a secure local application.

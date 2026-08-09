@@ -32,7 +32,7 @@ if (!isAuthenticated) {
 				<!-- TOP HEADER BAR -->
 				<div class="dash-top">
 					<div>
-						<div class="mono-tag">Authenticated Session</div>
+						<div class="mono-tag">Authenticated Master Session</div>
 						<h1 class="editorial-title dash-heading">Blog CMS Dashboard</h1>
 					</div>
 					<button id="logout-btn" class="btn btn-secondary">Logout</button>
@@ -76,15 +76,39 @@ if (!isAuthenticated) {
 
 						<div class="form-group">
 							<label for="content" class="mono-tag">Markdown Article Content</label>
-							<textarea id="content" required rows="12" placeholder="Write article content in Markdown format..." class="form-textarea"></textarea>
+							<textarea id="content" required rows="10" placeholder="Write article content in Markdown format..." class="form-textarea"></textarea>
 						</div>
 
 						<div id="status-msg" class="status-msg" style="display: none;"></div>
 
 						<button type="submit" id="publish-btn" class="btn btn-primary btn-lg">
-							Publish Article &rarr;
+							Publish Article to Database &rarr;
 						</button>
 					</form>
+				</div>
+
+				<!-- MANAGE ARTICLES & TRASH -->
+				<div class="bento-card dash-card" style="margin-top: 3rem;">
+					<div class="card-meta">
+						<span class="pastel-tag tag-purple">DATABASE MANAGEMENT</span>
+					</div>
+					<h2 class="section-heading">Published Articles &amp; Trash</h2>
+
+					<!-- ACTIVE PUBLISHED ARTICLES -->
+					<div class="manage-section">
+						<h3 class="manage-subtitle">Active Published Articles</h3>
+						<div id="active-list" class="articles-list">
+							<div class="loading-text">Loading articles from D1 database...</div>
+						</div>
+					</div>
+
+					<!-- TRASH / DELETED ARTICLES -->
+					<div class="manage-section" style="margin-top: 2.5rem;">
+						<h3 class="manage-subtitle" style="color: var(--pastel-amber-text);">Trash &amp; Archived Articles</h3>
+						<div id="trash-list" class="articles-list">
+							<div class="loading-text">Loading trash items...</div>
+						</div>
+					</div>
 				</div>
 			</div>
 		</main>
@@ -92,7 +116,7 @@ if (!isAuthenticated) {
 		<Footer />
 
 		<script>
-			// Auto slug generator from title
+			// Auto slug generator
 			const titleInput = document.getElementById('title') as HTMLInputElement;
 			const slugInput = document.getElementById('slug') as HTMLInputElement;
 
@@ -119,7 +143,7 @@ if (!isAuthenticated) {
 				e.preventDefault();
 				statusMsg.style.display = 'none';
 				publishBtn.disabled = true;
-				publishBtn.innerText = 'Publishing Article...';
+				publishBtn.innerText = 'Publishing to Database...';
 
 				const postData = {
 					title: (document.getElementById('title') as HTMLInputElement).value,
@@ -141,11 +165,10 @@ if (!isAuthenticated) {
 
 					if (res.ok && data.success) {
 						statusMsg.className = 'status-msg status-success';
-						statusMsg.innerText = `Published successfully! Redirecting...`;
+						statusMsg.innerText = data.message || `Published successfully!`;
 						statusMsg.style.display = 'block';
-						setTimeout(() => {
-							window.location.href = '/blog';
-						}, 1200);
+						form.reset();
+						loadArticles();
 					} else {
 						statusMsg.className = 'status-msg status-error';
 						statusMsg.innerText = data.error || 'Failed to publish post';
@@ -157,11 +180,100 @@ if (!isAuthenticated) {
 					statusMsg.style.display = 'block';
 				} finally {
 					publishBtn.disabled = false;
-					publishBtn.innerText = 'Publish Article →';
+					publishBtn.innerText = 'Publish Article to Database →';
 				}
 			});
 
-			// Logout with strict session clearing
+			// Fetch and render articles list
+			async function loadArticles() {
+				const activeList = document.getElementById('active-list') as HTMLDivElement;
+				const trashList = document.getElementById('trash-list') as HTMLDivElement;
+
+				try {
+					const res = await fetch('/api/posts');
+					const posts = await res.json();
+
+					const activePosts = posts.filter((p: any) => !p.is_deleted || p.is_deleted === 0);
+					const trashPosts = posts.filter((p: any) => p.is_deleted === 1);
+
+					// Render Active List
+					if (activePosts.length === 0) {
+						activeList.innerHTML = '<div class="empty-text">No active published articles.</div>';
+					} else {
+						activeList.innerHTML = activePosts.map((p: any) => `
+							<div class="article-row">
+								<div class="article-info">
+									<div class="article-title">${p.title}</div>
+									<div class="article-meta">Slug: <code>/blog/${p.slug}</code> | Published: ${p.pub_date || p.pubDate}</div>
+								</div>
+								<div class="article-actions">
+									<button class="btn btn-secondary btn-sm delete-btn" data-slug="${p.slug}">🗑️ Move to Trash</button>
+								</div>
+							</div>
+						`).join('');
+					}
+
+					// Render Trash List
+					if (trashPosts.length === 0) {
+						trashList.innerHTML = '<div class="empty-text">Trash is empty.</div>';
+					} else {
+						trashList.innerHTML = trashPosts.map((p: any) => `
+							<div class="article-row trash-row">
+								<div class="article-info">
+									<div class="article-title">${p.title}</div>
+									<div class="article-meta">Slug: <code>/blog/${p.slug}</code> | Status: In Trash</div>
+								</div>
+								<div class="article-actions">
+									<button class="btn btn-secondary btn-sm restore-btn" data-slug="${p.slug}">🔄 Restore Article</button>
+									<button class="btn btn-secondary btn-sm perm-delete-btn" data-slug="${p.slug}" style="color: #f87171;">❌ Delete Permanently</button>
+								</div>
+							</div>
+						`).join('');
+					}
+
+					// Bind event listeners
+					document.querySelectorAll('.delete-btn').forEach(btn => {
+						btn.addEventListener('click', () => handlePostAction(btn.getAttribute('data-slug')!, 'delete'));
+					});
+					document.querySelectorAll('.restore-btn').forEach(btn => {
+						btn.addEventListener('click', () => handlePostAction(btn.getAttribute('data-slug')!, 'restore'));
+					});
+					document.querySelectorAll('.perm-delete-btn').forEach(btn => {
+						btn.addEventListener('click', () => {
+							if (confirm('Are you sure you want to permanently delete this article? This action cannot be undone.')) {
+								handlePostAction(btn.getAttribute('data-slug')!, 'permanent_delete');
+							}
+						});
+					});
+
+				} catch (err) {
+					activeList.innerHTML = '<div class="empty-text">Failed to load articles.</div>';
+					trashList.innerHTML = '';
+				}
+			}
+
+			async function handlePostAction(slug: string, action: 'delete' | 'restore' | 'permanent_delete') {
+				try {
+					const res = await fetch('/api/posts', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({ action, slug }),
+					});
+					const data = await res.json();
+					if (data.success) {
+						loadArticles();
+					} else {
+						alert(data.error || 'Action failed');
+					}
+				} catch (err) {
+					alert('Network error while processing action');
+				}
+			}
+
+			// Initial load
+			loadArticles();
+
+			// Logout
 			const logoutBtn = document.getElementById('logout-btn') as HTMLButtonElement;
 			logoutBtn?.addEventListener('click', async () => {
 				try {
@@ -248,9 +360,64 @@ if (!isAuthenticated) {
 		border: 1px solid rgba(248, 113, 113, 0.2);
 	}
 
+	/* Article List Management Styles */
+	.manage-subtitle {
+		font-size: 1.15rem;
+		font-weight: 700;
+		margin-bottom: 1rem;
+	}
+	.articles-list {
+		display: flex;
+		flex-direction: column;
+		gap: 0.75rem;
+	}
+	.article-row {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		background: var(--bg-primary);
+		border: 1px solid var(--border-light);
+		border-radius: 6px;
+		padding: 1rem 1.25rem;
+	}
+	.trash-row {
+		opacity: 0.8;
+		border-style: dashed;
+	}
+	.article-title {
+		font-weight: 600;
+		font-size: 1rem;
+		color: var(--text-main);
+	}
+	.article-meta {
+		font-family: var(--font-mono);
+		font-size: 0.75rem;
+		color: var(--text-dim);
+		margin-top: 0.25rem;
+	}
+	.article-actions {
+		display: flex;
+		gap: 0.5rem;
+	}
+	.btn-sm {
+		padding: 0.4rem 0.75rem;
+		font-size: 0.8125rem;
+	}
+	.loading-text, .empty-text {
+		font-family: var(--font-mono);
+		font-size: 0.8125rem;
+		color: var(--text-dim);
+		padding: 1rem 0;
+	}
+
 	@media (max-width: 768px) {
 		.form-grid {
 			grid-template-columns: 1fr;
+		}
+		.article-row {
+			flex-direction: column;
+			align-items: flex-start;
+			gap: 1rem;
 		}
 	}
 </style>

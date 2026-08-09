@@ -1,4 +1,4 @@
--- Cloudflare D1 Database Schema for Aegis Blog Posts
+-- Cloudflare D1 Database Schema for Aegis Blog Posts with Soft Delete & Restore support
 CREATE TABLE IF NOT EXISTS posts (
   id TEXT PRIMARY KEY,
   slug TEXT UNIQUE NOT NULL,
@@ -8,11 +8,12 @@ CREATE TABLE IF NOT EXISTS posts (
   author TEXT NOT NULL,
   category TEXT NOT NULL,
   content TEXT NOT NULL,
+  is_deleted INTEGER DEFAULT 0,
   created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Seed initial v1.0.0 release article into Cloudflare D1 Database
-INSERT OR REPLACE INTO posts (id, slug, title, description, pub_date, author, category, content)
+INSERT OR REPLACE INTO posts (id, slug, title, description, pub_date, author, category, content, is_deleted)
 VALUES (
   'v1-0-0-release',
   'v1-0-0-release',
@@ -76,5 +77,6 @@ Aegis v1.0.0 has completed rigorous verification:
 Download the production Windows NSIS installer or inspect the source code directly on GitHub:
 
 - **Releases Page**: [https://github.com/mukeshv-tech/Aegis/releases/](https://github.com/mukeshv-tech/Aegis/releases/)
-- **Source Code**: [https://github.com/mukeshv-tech/Aegis](https://github.com/mukeshv-tech/Aegis)'
+- **Source Code**: [https://github.com/mukeshv-tech/Aegis](https://github.com/mukeshv-tech/Aegis)',
+  0
 );
