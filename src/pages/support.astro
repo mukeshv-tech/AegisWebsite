@@ -5,13 +5,17 @@ import BaseHead from '../components/BaseHead.astro';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 
+// Cloudflare Geolocation detection header
+const countryHeader = Astro.request.headers.get('cf-ipcountry') || Astro.request.headers.get('x-country-code') || '';
+const isIndiaRegion = !countryHeader || ['IN', 'BD', 'PK', 'NP', 'LK'].includes(countryHeader.toUpperCase());
+
 const keyId = process.env.PUBLIC_RAZORPAY_KEY_ID || process.env.RAZORPAY_KEY_ID || 'rzp_test_TNbJmoow265Zb0';
 ---
 
 <!doctype html>
 <html lang="en">
 	<head>
-		<BaseHead title="Support Aegis — Razorpay Checkout" description="Support open-source development for Aegis Zero-Trust Remote Environment Workstation." />
+		<BaseHead title="Support Aegis — Locality Pricing & Sponsorship" description="Support open-source development for Aegis Zero-Trust Remote Environment Workstation with regional purchasing power parity pricing." />
 		<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 	</head>
 	<body>
@@ -25,6 +29,21 @@ const keyId = process.env.PUBLIC_RAZORPAY_KEY_ID || process.env.RAZORPAY_KEY_ID 
 					Aegis is 100% open-source software built for DevOps leads and SREs. Your contribution helps fund continuous integration pipelines, security audits, and feature development.
 				</p>
 
+				<!-- LOCALITY PRICING BANNER & TOGGLE -->
+				<div class="locality-banner">
+					<div class="locality-info">
+						<span class="pastel-tag tag-blue">📍 LOCALITY PRICING</span>
+						<span id="location-label" class="mono-tag">
+							{isIndiaRegion ? 'Region: South Asia / India (PPP Adjusted)' : 'Region: International / Global'}
+						</span>
+					</div>
+					<div class="currency-toggle">
+						<span class="mono-label">Currency:</span>
+						<button type="button" id="toggle-inr" class={`toggle-btn ${isIndiaRegion ? 'active' : ''}`}>₹ INR</button>
+						<button type="button" id="toggle-usd" class={`toggle-btn ${!isIndiaRegion ? 'active' : ''}`}>$ USD</button>
+					</div>
+				</div>
+
 				<!-- TEST MODE WARNING BANNER -->
 				<div class="test-mode-banner">
 					<div class="banner-meta">
@@ -36,43 +55,44 @@ const keyId = process.env.PUBLIC_RAZORPAY_KEY_ID || process.env.RAZORPAY_KEY_ID 
 					</p>
 				</div>
 
+				<!-- PRICING TIERS GRID -->
 				<div class="bento-grid support-grid">
-					<!-- Preset 1: ₹500 -->
+					<!-- Preset 1 -->
 					<div class="bento-card support-card">
 						<div class="card-meta">
 							<span class="pastel-tag tag-blue">SUPPORTER tier</span>
 						</div>
 						<h3>Community Tier</h3>
-						<div class="price-val">₹500 <span>INR</span></div>
+						<div class="price-val"><span class="c-symbol">₹</span><span id="price-1">199</span> <span class="c-code">INR</span></div>
 						<p>Fund CI runners and automated integration testing matrix.</p>
-						<button type="button" class="btn btn-primary pay-btn" data-amount="50000" data-tier="Community Supporter">
-							Sponsor ₹500 &rarr;
+						<button type="button" class="btn btn-primary pay-btn" data-preset="1">
+							Sponsor <span class="c-symbol">₹</span><span id="btn-price-1">199</span> &rarr;
 						</button>
 					</div>
 
-					<!-- Preset 2: ₹1,500 -->
+					<!-- Preset 2 -->
 					<div class="bento-card support-card featured-card">
 						<div class="card-meta">
 							<span class="pastel-tag tag-purple">RECOMMENDED</span>
 						</div>
 						<h3>Pro Engineer Tier</h3>
-						<div class="price-val">₹1,500 <span>INR</span></div>
+						<div class="price-val"><span class="c-symbol">₹</span><span id="price-2">499</span> <span class="c-code">INR</span></div>
 						<p>Accelerate WebGL terminal performance &amp; Zmodem feature releases.</p>
-						<button type="button" class="btn btn-primary pay-btn" data-amount="150000" data-tier="Pro Engineer">
-							Sponsor ₹1,500 &rarr;
+						<button type="button" class="btn btn-primary pay-btn" data-preset="2">
+							Sponsor <span class="c-symbol">₹</span><span id="btn-price-2">499</span> &rarr;
 						</button>
 					</div>
 
-					<!-- Preset 3: ₹5,000 -->
+					<!-- Preset 3 -->
 					<div class="bento-card support-card">
 						<div class="card-meta">
 							<span class="pastel-tag tag-green">ENTERPRISE tier</span>
 						</div>
 						<h3>Infrastructure Tier</h3>
-						<div class="price-val">₹5,000 <span>INR</span></div>
+						<div class="price-val"><span class="c-symbol">₹</span><span id="price-3">1,499</span> <span class="c-code">INR</span></div>
 						<p>Fund security audits and zero-knowledge vault cryptographic hardening.</p>
-						<button type="button" class="btn btn-primary pay-btn" data-amount="500000" data-tier="Infrastructure Sponsor">
-							Sponsor ₹5,000 &rarr;
+						<button type="button" class="btn btn-primary pay-btn" data-preset="3">
+							Sponsor <span class="c-symbol">₹</span><span id="btn-price-3">1,499</span> &rarr;
 						</button>
 					</div>
 				</div>
@@ -85,8 +105,8 @@ const keyId = process.env.PUBLIC_RAZORPAY_KEY_ID || process.env.RAZORPAY_KEY_ID 
 					<h3>Choose Custom Amount</h3>
 					<div class="custom-form">
 						<div class="input-wrapper">
-							<span class="currency-prefix">₹</span>
-							<input type="number" id="custom-amount" min="10" value="100" step="10" placeholder="100" class="custom-input" />
+							<span class="currency-prefix c-symbol">₹</span>
+							<input type="number" id="custom-amount" min="1" value="100" step="5" class="custom-input" />
 						</div>
 						<button type="button" id="custom-pay-btn" class="btn btn-secondary">
 							Pay Custom Amount &rarr;
@@ -101,9 +121,72 @@ const keyId = process.env.PUBLIC_RAZORPAY_KEY_ID || process.env.RAZORPAY_KEY_ID 
 
 		<Footer />
 
-		<!-- Client Script for Razorpay Checkout Integration -->
-		<script is:inline>
+		<!-- Client Script for Locality Pricing & Razorpay Integration -->
+		<script is:inline define:vars={{ initialIsIndia: isIndiaRegion }}>
 			const clientRazorpayKey = "rzp_test_TNbJmoow265Zb0";
+			let activeCurrency = initialIsIndia ? 'INR' : 'USD';
+
+			const PRICING_TIERS = {
+				INR: {
+					symbol: '₹',
+					code: 'INR',
+					presets: [
+						{ value: 199, label: '199', subUnits: 19900, name: 'Community Supporter' },
+						{ value: 499, label: '499', subUnits: 49900, name: 'Pro Engineer' },
+						{ value: 1499, label: '1,499', subUnits: 149900, name: 'Infrastructure Sponsor' }
+					],
+					customDefault: 100
+				},
+				USD: {
+					symbol: '$',
+					code: 'USD',
+					presets: [
+						{ value: 5, label: '5', subUnits: 500, name: 'Community Supporter' },
+						{ value: 15, label: '15', subUnits: 1500, name: 'Pro Engineer' },
+						{ value: 45, label: '45', subUnits: 4500, name: 'Infrastructure Sponsor' }
+					],
+					customDefault: 10
+				}
+			};
+
+			function updateLocalityUI(currency) {
+				activeCurrency = currency;
+				const config = PRICING_TIERS[currency];
+
+				// Update symbols & codes
+				document.querySelectorAll('.c-symbol').forEach(el => el.textContent = config.symbol);
+				document.querySelectorAll('.c-code').forEach(el => el.textContent = config.code);
+
+				// Update tier values
+				config.presets.forEach((preset, idx) => {
+					const num = idx + 1;
+					const priceEl = document.getElementById(`price-${num}`);
+					const btnPriceEl = document.getElementById(`btn-price-${num}`);
+					if (priceEl) priceEl.textContent = preset.label;
+					if (btnPriceEl) btnPriceEl.textContent = preset.label;
+				});
+
+				// Update custom input default value
+				const customInput = document.getElementById('custom-amount');
+				if (customInput && !customInput.dataset.modified) {
+					customInput.value = config.customDefault;
+				}
+
+				// Update active toggle buttons
+				const btnINR = document.getElementById('toggle-inr');
+				const btnUSD = document.getElementById('toggle-usd');
+				const locLabel = document.getElementById('location-label');
+
+				if (currency === 'INR') {
+					btnINR?.classList.add('active');
+					btnUSD?.classList.remove('active');
+					if (locLabel) locLabel.textContent = 'Region: South Asia / India (PPP Adjusted)';
+				} else {
+					btnUSD?.classList.add('active');
+					btnINR?.classList.remove('active');
+					if (locLabel) locLabel.textContent = 'Region: International / Global';
+				}
+			}
 
 			function loadRazorpayScript() {
 				return new Promise((resolve) => {
@@ -124,7 +207,7 @@ const keyId = process.env.PUBLIC_RAZORPAY_KEY_ID || process.env.RAZORPAY_KEY_ID 
 				statusBox.innerHTML = message;
 			}
 
-			async function initiateCheckout(amountInPaise, description) {
+			async function initiateCheckout(amountInSubUnits, currencyCode, description) {
 				showStatus('Creating secure Razorpay order...', false);
 
 				const loaded = await loadRazorpayScript();
@@ -134,13 +217,12 @@ const keyId = process.env.PUBLIC_RAZORPAY_KEY_ID || process.env.RAZORPAY_KEY_ID 
 				}
 
 				try {
-					// STEP 1: Call Backend API to create order
 					const orderRes = await fetch('/api/create-order', {
 						method: 'POST',
 						headers: { 'Content-Type': 'application/json' },
 						body: JSON.stringify({
-							amount: amountInPaise,
-							currency: 'INR',
+							amount: amountInSubUnits,
+							currency: currencyCode,
 							receipt: 'rcpt_' + Date.now(),
 						}),
 					});
@@ -154,7 +236,6 @@ const keyId = process.env.PUBLIC_RAZORPAY_KEY_ID || process.env.RAZORPAY_KEY_ID 
 
 					showStatus('Opening Razorpay Payment Modal...', false);
 
-					// STEP 2: Open Razorpay Standard Checkout Modal
 					const options = {
 						key: orderData.key_id || clientRazorpayKey,
 						amount: orderData.amount,
@@ -164,7 +245,6 @@ const keyId = process.env.PUBLIC_RAZORPAY_KEY_ID || process.env.RAZORPAY_KEY_ID 
 						image: '/favicon.svg',
 						order_id: orderData.order_id,
 						handler: async function (response) {
-							// STEP 3: Receive payment credentials and verify signature
 							showStatus('Verifying payment signature with backend...', false);
 
 							try {
@@ -224,37 +304,52 @@ const keyId = process.env.PUBLIC_RAZORPAY_KEY_ID || process.env.RAZORPAY_KEY_ID 
 				}
 			}
 
-			// Initialize event listeners when DOM is fully loaded
-			function initButtons() {
-				const payButtons = document.querySelectorAll('.pay-btn');
-				payButtons.forEach((btn) => {
+			function initLocalityPage() {
+				// Currency Toggles
+				document.getElementById('toggle-inr')?.addEventListener('click', () => updateLocalityUI('INR'));
+				document.getElementById('toggle-usd')?.addEventListener('click', () => updateLocalityUI('USD'));
+
+				// Preset Buttons
+				document.querySelectorAll('.pay-btn').forEach((btn) => {
 					btn.addEventListener('click', (e) => {
 						e.preventDefault();
-						const amount = parseInt(btn.getAttribute('data-amount') || '10000', 10);
-						const tier = btn.getAttribute('data-tier') || 'Sponsorship';
-						initiateCheckout(amount, 'Aegis Sponsorship - ' + tier);
+						const presetIndex = parseInt(btn.getAttribute('data-preset') || '1', 10) - 1;
+						const config = PRICING_TIERS[activeCurrency];
+						const preset = config.presets[presetIndex];
+
+						initiateCheckout(preset.subUnits, config.code, 'Aegis Sponsorship - ' + preset.name);
 					});
 				});
 
+				// Custom Amount Button
 				const customPayBtn = document.getElementById('custom-pay-btn');
 				const customInput = document.getElementById('custom-amount');
 
+				customInput?.addEventListener('input', () => {
+					customInput.dataset.modified = 'true';
+				});
+
 				customPayBtn?.addEventListener('click', (e) => {
 					e.preventDefault();
-					const val = parseFloat(customInput.value || '100');
+					const val = parseFloat(customInput.value || '10');
 					if (isNaN(val) || val < 1) {
-						showStatus('Please enter a valid amount (minimum ₹1.00).', true);
+						showStatus('Please enter a valid amount (minimum 1).', true);
 						return;
 					}
-					const amountInPaise = Math.round(val * 100);
-					initiateCheckout(amountInPaise, 'Custom Aegis Sponsorship');
+					const subUnits = Math.round(val * 100);
+					const config = PRICING_TIERS[activeCurrency];
+
+					initiateCheckout(subUnits, config.code, 'Custom Aegis Sponsorship (' + config.code + ')');
 				});
+
+				// Initial UI sync
+				updateLocalityUI(activeCurrency);
 			}
 
 			if (document.readyState === 'loading') {
-				document.addEventListener('DOMContentLoaded', initButtons);
+				document.addEventListener('DOMContentLoaded', initLocalityPage);
 			} else {
-				initButtons();
+				initLocalityPage();
 			}
 		</script>
 	</body>
@@ -279,6 +374,52 @@ const keyId = process.env.PUBLIC_RAZORPAY_KEY_ID || process.env.RAZORPAY_KEY_ID 
 		margin-top: 1rem;
 		margin-bottom: 2rem;
 		line-height: 1.7;
+	}
+
+	/* Locality Pricing Banner */
+	.locality-banner {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		background: var(--bg-surface);
+		border: 1px solid var(--border-light);
+		border-radius: 8px;
+		padding: 1rem 1.5rem;
+		margin-bottom: 1.5rem;
+		flex-wrap: wrap;
+		gap: 1rem;
+	}
+	.locality-info {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+	}
+	.currency-toggle {
+		display: flex;
+		align-items: center;
+		gap: 0.5rem;
+	}
+	.mono-label {
+		font-family: var(--font-mono);
+		font-size: 0.8125rem;
+		color: var(--text-dim);
+	}
+	.toggle-btn {
+		background: var(--bg-primary);
+		border: 1px solid var(--border-light);
+		color: var(--text-muted);
+		font-family: var(--font-mono);
+		font-size: 0.8125rem;
+		padding: 0.35rem 0.85rem;
+		border-radius: 4px;
+		cursor: pointer;
+		transition: all 0.2s ease;
+	}
+	.toggle-btn.active {
+		border-color: var(--border-strong);
+		color: var(--text-main);
+		background: var(--bg-card);
+		font-weight: 700;
 	}
 
 	/* Test Mode Warning Banner */
@@ -330,7 +471,7 @@ const keyId = process.env.PUBLIC_RAZORPAY_KEY_ID || process.env.RAZORPAY_KEY_ID 
 		color: var(--text-main);
 		margin: 0.5rem 0 1rem 0;
 	}
-	.price-val span {
+	.price-val span.c-code {
 		font-size: 1rem;
 		font-weight: 400;
 		color: var(--text-dim);

@@ -7,11 +7,13 @@ export const POST: APIRoute = async ({ request }) => {
     const body = await request.json().catch(() => ({}));
     const { amount, currency = "INR", receipt } = body;
 
-    // STEP 1 ERROR HANDLING: Validate amount >= 100 paise
     const parsedAmount = parseInt(amount, 10);
-    if (isNaN(parsedAmount) || parsedAmount < 100) {
+    const validCurrency = (currency || "INR").toUpperCase();
+
+    // Minimum amount check: 50 subunits (e.g., 50 cents or 50 paise)
+    if (isNaN(parsedAmount) || parsedAmount < 50) {
       return new Response(
-        JSON.stringify({ error: "Invalid amount. Minimum amount is 100 paise (₹1.00)." }),
+        JSON.stringify({ error: "Invalid amount. Minimum amount is 50 sub-units." }),
         { status: 400, headers: { "Content-Type": "application/json" } }
       );
     }
@@ -36,8 +38,8 @@ export const POST: APIRoute = async ({ request }) => {
       },
       body: JSON.stringify({
         amount: parsedAmount,
-        currency,
-        receipt: receipt || `receipt_${Date.now()}`,
+        currency: validCurrency,
+        receipt: receipt || `rcpt_${Date.now()}`,
       }),
     });
 
@@ -53,7 +55,6 @@ export const POST: APIRoute = async ({ request }) => {
       );
     }
 
-    // Return: { order_id, amount, currency }
     return new Response(
       JSON.stringify({
         success: true,
