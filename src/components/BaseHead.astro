@@ -7,11 +7,12 @@ interface Props {
 	title: string;
 	description: string;
 	image?: string;
+	includeAds?: boolean;
 }
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
-const { title, description, image = '/blog-placeholder-1.jpg' } = Astro.props;
+const { title, description, image = '/blog-placeholder-1.jpg', includeAds = true } = Astro.props;
 ---
 
 <!-- Global Metadata -->
@@ -21,7 +22,12 @@ const { title, description, image = '/blog-placeholder-1.jpg' } = Astro.props;
 <meta name="generator" content={Astro.generator} />
 
 <!-- Google AdSense -->
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5201889113032974" crossorigin="anonymous"></script>
+{includeAds && (
+	<>
+		<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5201889113032974" crossorigin="anonymous"></script>
+		<script async custom-element="amp-auto-ads" src="https://cdn.ampproject.org/v0/amp-auto-ads-0.1.js"></script>
+	</>
+)}
 
 <!-- Razorpay Standard Web Checkout -->
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
