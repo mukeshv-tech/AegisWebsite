@@ -13,6 +13,7 @@ interface Props {
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 
 const { title, description, image = '/blog-placeholder-1.jpg', includeAds = true } = Astro.props;
+const GA_MEASUREMENT_ID = 'G-3LXKVP1TMD';
 ---
 
 <!-- Global Metadata -->
@@ -21,14 +22,15 @@ const { title, description, image = '/blog-placeholder-1.jpg', includeAds = true
 <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
 <meta name="generator" content={Astro.generator} />
 
-<Fragment set:html={`<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-3LXKVP1TMD"></script>
-<script>
+<!-- Google tag (gtag.js) -->
+<script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`}></script>
+<script is:inline define:vars={{ GA_MEASUREMENT_ID }}>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
-  gtag('config', 'G-3LXKVP1TMD');
-</script>`} />
+
+  gtag('config', GA_MEASUREMENT_ID);
+</script>
 
 <!-- Google AdSense -->
 {includeAds && (
