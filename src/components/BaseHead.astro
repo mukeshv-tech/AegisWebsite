@@ -22,8 +22,8 @@ const { title, description, image = '/blog-placeholder-1.jpg', includeAds = true
 <meta name="generator" content={Astro.generator} />
 
 <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-3LXKVP1TMD"></script>
-<script>
+<script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-3LXKVP1TMD"></script>
+<script is:inline>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
